@@ -1,0 +1,28 @@
+# This file describes the network interfaces available on your system
+# and how to activate them. For more information, see interfaces(5).
+# For examples checkout /usr/share/doc/ifupdown/examples/network-interfaces
+
+source /etc/network/interfaces.d/*
+
+auto lo
+iface lo inet loopback
+
+auto [INTERFACE]
+# allow-hotplug [INTERFACE] not needed given the hardware won't change
+# no-auto-down [INTERFACE] # Wait as long as possible before bringing down the interface
+
+# iface [INTERFACE] inet dhcp
+    # hostname hostname
+    # leasetime leasetime Preferred lease time in seconds
+    # hwaddress Link local or random
+
+iface [INTERFACE] inet static
+    address [CIDR IP]
+    # metric 1 for default gateway
+    gateway [GATEWAY]
+    dns-nameservers 1.1.1.1 1.0.0.1
+    # hwaddress Link local or random
+    # mtu
+
+    # up ip route add [CIDR IP] via [GATEWAY] onlink dev $IFACE
+    # down ip route del [CIDR IP] via [GATEWAY] onlink dev $IFACE

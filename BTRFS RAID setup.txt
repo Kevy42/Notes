@@ -1,0 +1,38 @@
+# Format with GPT
+fdisk /dev/DRIVE1
+fdisk /dev/DRIVE2
+
+# Create a keyfile (readable only by root)
+sudo dd if=/dev/urandom of=/root/external-drive-luks-keyfile bs=4096 count=1
+sudo chmod 0400 /root/external-drive-luks-keyfile
+
+# Encrypt each drive with LUKS and add the keyfile
+sudo cryptsetup luksFormat /dev/DRIVE1
+sudo cryptsetup luksFormat /dev/DRIVE2
+
+sudo cryptsetup luksAddKey /dev/DRIVE1 /root/external-drive-luks-keyfile
+sudo cryptsetup luksAddKey /dev/DRIVE2 /root/external-drive-luks-keyfile
+
+# Open encrypted drives using the keyfile
+sudo cryptsetup open /dev/DRIVE1 vmscrypt1 --key-file /root/external-drive-luks-keyfile
+sudo cryptsetup open /dev/DRIVE2 vmscrypt2 --key-file /root/external-drive-luks-keyfile
+
+# Create Btrfs RAID0 on the decrypted devices
+sudo mkfs.btrfs -d raid0 -m raid0 /dev/mapper/vmscrypt1 /dev/mapper/vmscrypt2
+
+# Mount
+sudo mkdir -p /mnt/VMS
+sudo mount /dev/mapper/vmscrypt1 /mnt/VMS
+
+# Get UUIDs
+blkid /dev/DRIVE1
+blkid /dev/DRIVE2
+
+# Add to /etc/crypttab (for auto-unlocking at boot)
+# Format: <name> <device> <keyfile> <options>
+vmscrypt1 UUID=uuid-of-DRIVE1 /root/external-drive-luks-keyfile luks,nofail
+vmscrypt2 UUID=uuid-of-DRIVE2 /root/external-drive-luks-keyfile luks,nofail
+
+# Add to /etc/fstab
+# You can use UUID from /dev/mapper/vmscrypt1 or simply use the name
+/dev/mapper/vmscrypt1 /mnt/VMS btrfs defaults,nofail,x-systemd.device-timeout=60s 0 0

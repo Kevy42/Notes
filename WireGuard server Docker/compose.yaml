@@ -1,0 +1,35 @@
+name: wireguard
+
+services:
+  wireguard:
+    container_name: wireguard
+    image: lscr.io/linuxserver/wireguard:latest
+
+    ports:
+      - 42069:42069/udp
+
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Stockholm
+      - SERVERURL=[DOMAIN] # For client config
+      - SERVERPORT=42069 # For client config, change server config/template to match
+      - PEERS=example
+      - PEERDNS=1.1.1.1 # For client config
+      - INTERNAL_SUBNET=10.1.1.0
+      - ALLOWEDIPS=10.1.1.1/32 # For client config, check all peers to make sure they've got the correct allowedips
+      # - SERVER_ALLOWEDIPS_PEER_vslab= # For server config, allows server to reach ips on client subnets
+      - LOG_CONFS=false
+
+    cap_add:
+      - NET_ADMIN # Neccessary for Wireguard to create its VPN interface.
+      - SYS_MODULE # Neccessary for loading Wireguard and iptables kernel module if not already loaded.
+
+    sysctls:
+      - net.ipv4.conf.all.src_valid_mark=1 # neccessary for validating packet origin
+
+    volumes:
+      - ./config:/config
+      - /lib/modules:/lib/modules # Neccessary for loading Wireguard and iptables kernel module if not already loaded.
+
+    restart: unless-stopped
