@@ -25,8 +25,8 @@ sudo mkdir -p /mnt/VMS
 sudo mount /dev/mapper/vmscrypt1 /mnt/VMS
 
 # Get UUIDs
-blkid /dev/DRIVE1
-blkid /dev/DRIVE2
+sudo blkid /dev/DRIVE1
+sudo blkid /dev/DRIVE2
 
 # Add to /etc/crypttab (for auto-unlocking at boot)
 # Format: <name> <device> <keyfile> <options>
@@ -34,5 +34,5 @@ vmscrypt1 UUID=uuid-of-DRIVE1 /root/external-drive-luks-keyfile luks,nofail
 vmscrypt2 UUID=uuid-of-DRIVE2 /root/external-drive-luks-keyfile luks,nofail
 
 # Add to /etc/fstab
-# You can use UUID from /dev/mapper/vmscrypt1 or simply use the name
+# You can use UUID from /dev/mapper/vmscrypt1 or name
 /dev/mapper/vmscrypt1 /mnt/VMS btrfs defaults,nofail,x-systemd.device-timeout=60s 0 0

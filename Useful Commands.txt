@@ -6,5 +6,10 @@ iptables --table filter --list --line-numbers --numeric --verbose
 nc -l -n -p 42069 -vv # Server
 nc -n 127.0.0.1 42069 -vv # Client
 
+# Finding
+grep -i --color=auto -n --exclude-dir=.git -R "[TEXT]" .
+tree -a -l -L 10 -I .git
+
 # Misc
 echo && git log --all --shortstat --pretty=oneline --graph -n 15 && for i in $(seq 1 100); do echo -n -; done; echo && git branch -avv && for i in $(seq 1 100); do echo -n -; done; echo && git status
+apt update && sudo apt install neovim vim dstat htop dnsutils tcpdump wget curl traceroute netcat-openbsd nmap tmux -y
