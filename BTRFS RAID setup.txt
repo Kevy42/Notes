@@ -3,19 +3,19 @@ fdisk /dev/DRIVE1
 fdisk /dev/DRIVE2
 
 # Create a keyfile (readable only by root)
-sudo dd if=/dev/urandom of=/root/external-drive-luks-keyfile bs=4096 count=1
-sudo chmod 0400 /root/external-drive-luks-keyfile
+sudo dd if=/dev/urandom of=/root/external-drive-luks.key bs=4096 count=1
+sudo chmod 0400 /root/external-drive-luks.key
 
 # Encrypt each drive with LUKS and add the keyfile
 sudo cryptsetup luksFormat /dev/DRIVE1
 sudo cryptsetup luksFormat /dev/DRIVE2
 
-sudo cryptsetup luksAddKey /dev/DRIVE1 /root/external-drive-luks-keyfile
-sudo cryptsetup luksAddKey /dev/DRIVE2 /root/external-drive-luks-keyfile
+sudo cryptsetup luksAddKey /dev/DRIVE1 /root/external-drive-luks.key
+sudo cryptsetup luksAddKey /dev/DRIVE2 /root/external-drive-luks.key
 
 # Open encrypted drives using the keyfile
-sudo cryptsetup open /dev/DRIVE1 vmscrypt1 --key-file /root/external-drive-luks-keyfile
-sudo cryptsetup open /dev/DRIVE2 vmscrypt2 --key-file /root/external-drive-luks-keyfile
+sudo cryptsetup open /dev/DRIVE1 vmscrypt1 --key-file /root/external-drive-luks.key
+sudo cryptsetup open /dev/DRIVE2 vmscrypt2 --key-file /root/external-drive-luks.key
 
 # Create Btrfs RAID0 on the decrypted devices
 sudo mkfs.btrfs -d raid0 -m raid0 /dev/mapper/vmscrypt1 /dev/mapper/vmscrypt2
@@ -30,9 +30,9 @@ sudo blkid /dev/DRIVE2
 
 # Add to /etc/crypttab (for auto-unlocking at boot)
 # Format: <name> <device> <keyfile> <options>
-vmscrypt1 UUID=uuid-of-DRIVE1 /root/external-drive-luks-keyfile luks,nofail
-vmscrypt2 UUID=uuid-of-DRIVE2 /root/external-drive-luks-keyfile luks,nofail
+vmscrypt1 UUID=uuid-of-DRIVE1 /root/external-drive-luks.key luks,nofail
+vmscrypt2 UUID=uuid-of-DRIVE2 /root/external-drive-luks.key luks,nofail
 
 # Add to /etc/fstab
 # You can use UUID from /dev/mapper/vmscrypt1 or name
-/dev/mapper/vmscrypt1 /mnt/VMS btrfs defaults,nofail,x-systemd.device-timeout=60s 0 0
+/dev/mapper/vmscrypt1 /mnt/VMS btrfs async,auto,nodev,noexec,nofail,relatime,nosuid,rw,nouser,X-mount.mkdir=0700,x-systemd.device-timeout=60s,autodefrag,clear_cache,compress=zstd:15,discard=async,space_cache=v2,ssd 0 0
