@@ -10,7 +10,7 @@ Before
     5. Run trixie upgrade in screen/tmux
 
 After:
-    1. Make sure systemd-cryptsetup is installed BEFORE rebooting if using an encrypted filesystem or anything to do with encrypted drives
+    1. Make sure systemd-cryptsetup is installed BEFORE rebooting if using an encrypted filesystem or anything to do with encrypted drives.
     1. Re-enable trixie backports to apt sources
     2. Enable watchdog(s)
     3. Check kernel version, remove old kernels and make sure you've got the latest kernel metapackage
