@@ -1,67 +1,77 @@
-# Networking
-ip -c -br a && ip -c -br route
-ss -l -t -u -n
-tcpdump -e -i any -n -Q inout -q
+# Networking ----------------------------------------------------------------------------------
+sudo ip -c -br a && ip -c -br route
+sudo ss --numeric --listening --tcp --udp --processes
+sudo tcpdump -e --interface any -n --direction inout -q -tttt
 
-ip route
-    add
-    to [IP]
-    metric [NUMBER]
-    table [NAME] # Usually "main"
-    dev [INTERFACE]
-    via [IP]
-    src [IP] # Will limit the route to only being used if the interface has that IP
-    scope link
-    protocol static
+# Only covers the most commonly used options
+sudo ip route \
+    add \
+    to [IP] \
+    metric 0 # Default \
+    table [NAME] # Usually "main" \
+    dev [INTERFACE] \
+    via [IP] \
+    src [IP] # Will limit the route to only being used if the interface has that IP \
+    scope link # "global" being the default \
+    protocol static # "static" meaing it was added by an admin
 
-iptables --table filter --list --line-numbers --numeric --verbose
+sudo iptables --table filter --list --line-numbers --numeric --verbose
+
 nc -l -n -p 42069 -vv # Server
 nc -n 127.0.0.1 42069 -vv # Client
 
 
-# Finding
-grep -i --color=auto -n --exclude-dir=.git -R "[TEXT]" .
-tree -a -l -L 10 -I .git
+# Finding ----------------------------------------------------------------------------------
+sudo grep -i --color=auto -n --exclude-dir=.git -R "[TEXT]" .
+sudo tree -a -l -L 10 -I .git
+
+sudo ps -t [TTY] # List all processes associated with a specific TTY
+sudo ps -a # List all TTY associated processes
+sudo ps -at # same as -a but more verbose
+sudo ps -ax # List all processes
+
+# Comprehensive low to high level lsblk overview
+sudo echo && sudo lsblk --output NAME,TRAN,HOTPLUG,RM,MODEL,PATH,TYPE,SIZE,PTTYPE,PARTTYPENAME,FSTYPE,FSSIZE,FSAVAIL,FSUSED,FSUSE%,UUID,LABEL,MOUNTPOINTS,FSROOTS && echo
 
 
-# Misc
-echo && git log --all --shortstat --pretty=oneline --graph -n 15 && for i in $(seq 1 100); do echo -n -; done; echo && git branch -avv && for i in $(seq 1 100); do echo -n -; done; echo && git status
-apt update && sudo apt install neovim vim htop dnsutils tcpdump wget curl traceroute netcat-openbsd nmap tmux -y
+# Misc ----------------------------------------------------------------------------------
+echo && git log --all --shortstat --pretty=oneline --graph -n 15 && for i in $(seq 1 100); do echo -n -; done; echo && git branch -avv && for i in $(seq 1 100); do echo -n -; done; echo && git status # comprehensive git status
+sudo apt update && sudo apt install neovim vim htop dnsutils tcpdump curl traceroute netcat-openbsd nmap tmux strace tree lsof # Basic debugging/must have packages
 
 sudo nmap
     # TARGET SPECIFICATION
-    --resolve-all
-    --unique
-    --dns-servers [DNS SERVERS]
+    --resolve-all \
+    --unique \
+    --dns-servers [DNS SERVERS] \
 
     # HOST DISCOVERY
-    (-Pn to skip host discovery entirely) -PS -PA -PU -PY -PE -PP -PM -P0 --traceroute
+    (-Pn to skip host discovery entirely) -PS -PA -PU -PY -PE -PP -PM -P0 --traceroute \
 
     # PORT SCANNING TECHNIQUES
-    -sS -sU (UDP scan, could take ages depending on port range) -sY -sZ (or -sO for IP protocol scan. Cannot be used with others)
+    -sS -sU (UDP scan, could take ages depending on port range) -sY -sZ (or -sO for IP protocol scan. Cannot be used with others) \
 
     # PORT SPECIFICATION AND SCAN ORDER
-    -p 0-65535
+    -p 0-65535 \
 
     # SERVICE AND VERSION DETECTION
-    -sV --allports --version-intensity 9 # Could take a while
+    -sV --allports --version-intensity 9 \ # Could take a while
 
     # OS DETECTION
-    -O --osscan-guess --max-os-tries 10 (2x the defualt)
+    -O --osscan-guess --max-os-tries 10 (2x the defualt) \
 
     # NMAP SCRIPTING ENGINE
-    -sC (uses default, or --script with options auth,broadcast,default,discovery,dos,exploit,external,fuzzer,intrusive,malware,safe,version,vuln)
+    -sC (uses default, or --script with options auth,broadcast,default,discovery,dos,exploit,external,fuzzer,intrusive,malware,safe,version,vuln) \
 
     # TIMING AND PERFORMANCE
-    -T normal (options: paranoid, sneaky, polite, normal, aggressive, insane)
+    -T normal (options: paranoid, sneaky, polite, normal, aggressive, insane) \
 
     # FIREWALL/IDS EVASION AND SPOOFING
-    -e [INTERFACE] # In the rare event that Nmap cannot discriminate between which interface to use
+    -e [INTERFACE] \ # In the rare event that Nmap cannot discriminate between which interface to use
 
     # OUTPUT
-    -vvv
-    --reason
-    --status-every 1
-    --open # Can be combined with -vvv for a cleaner output but recommended to disable if not using -vvv
+    -vvv \
+    --reason \
+    --status-every 1 \
+    --open \ # Can be combined with -vvv for a cleaner output but recommended to disable if not using -vvv
 
     [HOST]

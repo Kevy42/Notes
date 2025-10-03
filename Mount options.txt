@@ -5,8 +5,8 @@ Base: async,auto,dev,exec,relatime,suid,rw,nouser
 BTRFS: autodefrag,clear_cache,compress=zstd:15,discard=async,fatal_errors=panic,space_cache=v2,ssd,subvol=[NAME]
 
 # External drive
-Base: async,auto,nodev,noexec,nofail,relatime,nosuid,rw,nouser,X-mount.mkdir=0700,x-systemd.device-timeout=60s
+Base: async,auto,nodev,noexec,nofail,relatime,nosuid,rw,nouser,X-mount.mkdir=0770,x-systemd.device-timeout=60s
 BTRFS: autodefrag,clear_cache,compress=zstd:15,discard=async,space_cache=v2,ssd
 
 # SMB
-//[DOMAIN NAME]     [MOUNT POINT]     cifs  async,auto,nodev,noexec,nofail,relatime,nosuid,rw,nouser,x-systemd.automount,X-mount.mkdir=0700,credentials=[CREDENTIAL FILE PATH],uid=1000,gid=1000,iocharset=utf8 0 0 # Uses default WORKGROUP domain
+//[DOMAIN NAME]     [MOUNT POINT]     cifs  async,auto,nodev,noexec,nofail,relatime,nosuid,rw,nouser,x-systemd.automount,X-mount.mkdir=0770,credentials=[CREDENTIAL FILE PATH],uid=1000,gid=1000,iocharset=utf8 0 0 # Uses default WORKGROUP domain
