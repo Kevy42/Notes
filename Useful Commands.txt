@@ -1,42 +1,23 @@
 # Networking ----------------------------------------------------------------------------------
-sudo ip -c -br a && ip -c -br route
+ip -c -br r && echo && ip -c -br a && echo && ip -c -br n && echo && ip -c -br l # Macro
 sudo ss --numeric --listening --tcp --udp --processes
+sudo iptables --table filter --list --line-numbers --numeric --verbose
 sudo tcpdump -e --interface any -n --direction inout -q -tttt
 
-# Only covers the most commonly used options
-sudo ip route \
-    add \
-    to [IP] \
-    metric 0 # Default \
-    table [NAME] # Usually "main" \
-    dev [INTERFACE] \
-    via [IP] \
-    src [IP] # Will limit the route to only being used if the interface has that IP \
-    scope link # "global" being the default \
-    protocol static # "static" meaing it was added by an admin
+dig
+    -p # Port \
+    -t [TYPE] # Record type (e.g A, AAAA, CNAME.. etc. Use -x for reverse lookups)
+    -x # Reverse lookup
 
-sudo iptables --table filter --list --line-numbers --numeric --verbose
+ping
+    -b # Allow pinging of broadcast address \
+    -c [COUNT] # Number of pings (count) \
+    -H # Perform reverse DNS lookup on IPs \
+    -f # Flood ping \
+    -I [INTERFACE] # Interface, can be ip or name
+    -r # Bypass routing tables and send directly to host \
 
-nc -l -n -p 42069 -vv # Server
-nc -n 127.0.0.1 42069 -vv # Client
-
-
-# Finding ----------------------------------------------------------------------------------
-sudo grep -i --color=auto -n --exclude-dir=.git -R "[TEXT]" .
-sudo tree -a -l -L 10 -I .git
-
-sudo ps -t [TTY] # List all processes associated with a specific TTY
-sudo ps -a # List all TTY associated processes
-sudo ps -at # same as -a but more verbose
-sudo ps -ax # List all processes
-
-# Comprehensive low to high level lsblk overview
-sudo echo && sudo lsblk --output NAME,TRAN,HOTPLUG,RM,MODEL,PATH,TYPE,SIZE,PTTYPE,PARTTYPENAME,FSTYPE,FSSIZE,FSAVAIL,FSUSED,FSUSE%,UUID,LABEL,MOUNTPOINTS,FSROOTS && echo
-
-
-# Misc ----------------------------------------------------------------------------------
-echo && git log --all --shortstat --pretty=oneline --graph -n 15 && for i in $(seq 1 100); do echo -n -; done; echo && git branch -avv && for i in $(seq 1 100); do echo -n -; done; echo && git status # comprehensive git status
-sudo apt update && sudo apt install neovim vim htop dnsutils tcpdump curl traceroute netcat-openbsd nmap tmux strace tree lsof # Basic debugging/must have packages
+ping -b -H google.com # Macro
 
 sudo nmap
     # TARGET SPECIFICATION
@@ -75,3 +56,37 @@ sudo nmap
     --open \ # Can be combined with -vvv for a cleaner output but recommended to disable if not using -vvv
 
     [HOST]
+
+# Only covers the most commonly used options
+sudo ip route \
+    add \
+    to [IP] \
+    metric 0 # Default \
+    table [NAME] # Usually "main" \
+    dev [INTERFACE] \
+    via [IP] \
+    src [IP] # Will limit the route to only being used if the interface has that IP \
+    scope link # "global" being the default \
+    protocol static # "static" meaing it was added by an admin
+
+nc -l -n -p 42069 -vv
+nc -n 127.0.0.1 42069 -vv
+
+
+# Finding ----------------------------------------------------------------------------------
+sudo grep --ignore-case --color=auto --line-number --exclude-dir=.git --dereference-recursive "[TEXT]" . # Macro
+sudo tree -a -l -L 10 -I .git # Macro
+
+sudo ps -t [TTY] # List all processes associated with a specific TTY
+sudo ps -a # List all TTY associated processes
+sudo ps -at # same as -a but more verbose
+sudo ps -ax # List all processes
+
+# Comprehensive low to high level lsblk overview
+sudo echo && sudo lsblk --output NAME,TRAN,HOTPLUG,RM,MODEL,PATH,TYPE,SIZE,PTTYPE,PARTTYPENAME,FSTYPE,FSSIZE,FSAVAIL,FSUSED,FSUSE%,UUID,LABEL,MOUNTPOINTS,FSROOTS && echo # Macro
+
+
+# Misc ----------------------------------------------------------------------------------
+echo && git log --all --shortstat --pretty=oneline --graph -n 15 && for i in $(seq 1 100); do echo -n -; done; echo && git branch -avv && for i in $(seq 1 100); do echo -n -; done; echo && git status # Macro
+
+sudo apt update && sudo apt install vim htop ethtool dnsutils tcpdump curl traceroute netcat-openbsd nmap strace tree lsof fastfetch # Basic debugging/must have packages # Macro
