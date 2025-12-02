@@ -1,20 +1,27 @@
 # Networking ----------------------------------------------------------------------------------
-ip -c -br r && echo && ip -c -br a && echo && ip -c -br n && echo && ip -c -br l # Macro
+
+sudo ethtool
+    -i (--driver) # Hardware info \
+    -P (--show-permaddr) [INTERFACE] # Show hardware MAC address \
+    -S (--statistics) \
+    -t (--test) [INTERFACE] [MODE] # Modes: offline, online, external_lb
+
+ip -c -br n && echo && ip -c -br r && echo && ip -c -br a && echo && ip -c -br l # Macro
 sudo ss --numeric --listening --tcp --udp --processes
 sudo iptables --table filter --list --line-numbers --numeric --verbose
 sudo tcpdump -e --interface any -n --direction inout -q -tttt
 
 dig
-    -p # Port \
-    -t [TYPE] # Record type (e.g A, AAAA, CNAME.. etc. Use -x for reverse lookups)
-    -x # Reverse lookup
+    -p [PORT] \
+    -t [TYPE] # Record type (e.g A, AAAA, CNAME.. etc.) \
+    -x [IP] # Simplified reverse lookup, automatically reverses the IP order and appends .ip-addr.arpa
 
 ping
     -b # Allow pinging of broadcast address \
     -c [COUNT] # Number of pings (count) \
     -H # Perform reverse DNS lookup on IPs \
     -f # Flood ping \
-    -I [INTERFACE] # Interface, can be ip or name
+    -I [INTERFACE] # Interface, can be ip or name. Useful for bypassing some custom routing setups
     -r # Bypass routing tables and send directly to host \
 
 ping -b -H google.com # Macro

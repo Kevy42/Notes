@@ -15,7 +15,7 @@ After:
     2. Enable watchdog(s)
     3. Check kernel version, remove old kernels and make sure you've got the latest kernel metapackage
     3. List and remove any obsolete packages using apt list '~o' and apt purge '~o'
-    3. run apt autoremove and apt clean
+    3. run apt autopurge and apt clean
     3. Clean out old /tmp files located on disk by bind mounting the system and deleting. mount --bind / /mnt
     3. check if wtmpdb is installed and if not, remove the old /var/log/wtmp* log file
     3. Remove /etc/tmpfiles.d/tmp.conf if present in order to adopt the new systemd-tmpfiles auto-clean scheme that's default on new installations

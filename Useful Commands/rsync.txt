@@ -1,0 +1,17 @@
+# List remote files/dirs by not providing a [DEST]
+rsync [SOURCE]
+
+sudo rsync \
+    --info=backup,copy,del,flist2,misc2,mount,name2,nonreg1,progress2,remove,skip2,stats1,symsafe # See "--info=help" for explanations or use the legacy "-vv" \
+    --ignore-times # Disables the changed file size and or last-modified based quick-check for skipping files (does not affect the delta-transfer algorithm) \
+    --checksum # Overrides "--ignore-times" (recommended) \
+    --recursive \
+    --update # Skip destination files with a modified time newer than the source (e.g keep locally modified files) \
+    --safe-links # Only copy symlinks pointing to files/dirs inside the specificed file tree \
+    --chmod [PERMS] # Set dest file permissions. Also see --owner and --group \
+    --super # Attempt to perform privilaged actions even if not ran as root as some machines allow such actions \
+    --dry-run \
+    --max-size 10G \
+
+    [SOURCE] \
+    [DEST]
