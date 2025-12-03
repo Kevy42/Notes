@@ -1,0 +1,5 @@
+# Only covers the most commonly used/important options
+
+# Macros
+nc -l -n -p 42069 -vv
+nc -n 127.0.0.1 42069 -vv

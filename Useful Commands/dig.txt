@@ -1,0 +1,6 @@
+# Only covers the most commonly used/important options
+
+dig
+    -p [PORT] \
+    -t [TYPE] # Record type (e.g A, AAAA, CNAME.. etc.) \
+    -x [IP] # Simplified reverse lookup, automatically reverses the IP order and appends .ip-addr.arpa

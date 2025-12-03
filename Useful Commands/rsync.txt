@@ -1,17 +1,28 @@
-# List remote files/dirs by not providing a [DEST]
-rsync [SOURCE]
+# Only covers the most commonly used/important options
 
-sudo rsync \
-    --info=backup,copy,del,flist2,misc2,mount,name2,nonreg1,progress2,remove,skip2,stats1,symsafe # See "--info=help" for explanations or use the legacy "-vv" \
-    --ignore-times # Disables the changed file size and or last-modified based quick-check for skipping files (does not affect the delta-transfer algorithm) \
-    --checksum # Overrides "--ignore-times" (recommended) \
-    --recursive \
-    --update # Skip destination files with a modified time newer than the source (e.g keep locally modified files) \
-    --safe-links # Only copy symlinks pointing to files/dirs inside the specificed file tree \
-    --chmod [PERMS] # Set dest file permissions. Also see --owner and --group \
-    --super # Attempt to perform privilaged actions even if not ran as root as some machines allow such actions \
-    --dry-run \
-    --max-size 10G \
+# Macro
+sudo rsync --info=backup,copy,del,flist2,misc2,mount,name2,nonreg1,progress2,remove,skip2,stats1,symsafe --ignore-times --checksum --recursive --update --safe-links --chmod [PERMS] --super --dry-run --max-size [SIZE] --exclude [FILE/DIR] --compress --compress-choice zstd --compress-level 1000 --chown [USER:GROUP] --human-readable --partial --partial-dir .rsync-tmp --bwlimit [LIMIT] --fsync [SOURCE] [DEST]
 
-    [SOURCE] \
+sudo rsync
+    --info=backup,copy,del,flist2,misc2,mount,name2,nonreg1,progress2,remove,skip2,stats1,symsafe # See "--info=help" for explanations or use the legacy "-vv"
+    --ignore-times           # Disables the changed file size and or last-modified based quick-check for skipping files (does not affect the delta-transfer algorithm)
+    --checksum               # Uses checksumming instead of quick-check
+    --recursive
+    --update                 # Skip destination files with a modified time newer than the source (e.g keep locally modified files)
+    --safe-links             # Only copy symlinks pointing to files/dirs inside the specificed file tree
+    --chmod [PERMS]          # Set dest file perms
+    --super                  # Attempt to perform privilaged actions even if not ran as root as some machines may allow
+    --dry-run
+    --max-size [SIZE]
+    --exclude [FILE/DIR]
+    --compress
+    --compress-choice zstd
+    --compress-level 1000    # value will be rounded down to highest possible for given algorithm. Reduce if compute bottlenecked
+    --chown [USER:GROUP]     # Set dest file ownership
+    --human-readable
+    --partial                # Keep partially transferred files so progress can be resumed if interrupted
+    --partial-dir .rsync-tmp # Where to keep partial files until transfer is completed
+    --bwlimit [LIMIT]        # Bandwith limit
+    --fsync                  # Sync each file as it's transferred
+    [SOURCE]
     [DEST]

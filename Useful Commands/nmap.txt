@@ -1,0 +1,39 @@
+# Only covers the most commonly used/important options
+
+sudo nmap
+    # TARGET SPECIFICATION
+    --resolve-all
+    --unique
+    --dns-servers [DNS SERVERS]
+
+    # HOST DISCOVERY
+    (-Pn to skip host discovery entirely) -PS -PA -PU -PY -PE -PP -PM -P0 --traceroute
+
+    # PORT SCANNING TECHNIQUES
+    -sS -sU (UDP scan, could take ages depending on port range) -sY -sZ (or -sO for IP protocol scan. Cannot be used with others)
+
+    # PORT SPECIFICATION AND SCAN ORDER
+    -p 0-65535
+
+    # SERVICE AND VERSION DETECTION
+    -sV --allports --version-intensity 9 # Could take a while
+
+    # OS DETECTION
+    -O --osscan-guess --max-os-tries 10 (2x the defualt)
+
+    # NMAP SCRIPTING ENGINE
+    -sC (uses default, or --script with options auth,broadcast,default,discovery,dos,exploit,external,fuzzer,intrusive,malware,safe,version,vuln)
+
+    # TIMING AND PERFORMANCE
+    -T normal (options: paranoid, sneaky, polite, normal, aggressive, insane)
+
+    # FIREWALL/IDS EVASION AND SPOOFING
+    -e [INTERFACE] # In the rare event that Nmap cannot discriminate between which interface to use
+
+    # OUTPUT
+    -vvv
+    --reason
+    --status-every 1
+    --open # Can be combined with -vvv for a cleaner output but recommended to disable if not using -vvv
+
+    [HOST]

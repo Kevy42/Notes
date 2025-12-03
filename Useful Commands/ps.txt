@@ -1,0 +1,7 @@
+# Only covers the most commonly used/important options
+
+# Macros
+sudo ps -t [TTY] # List all processes associated with a specific TTY
+sudo ps -a       # List all TTY associated processes
+sudo ps -at      # same as -a but more verbose
+sudo ps -ax      # List all processes

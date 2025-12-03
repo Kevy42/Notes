@@ -1,0 +1,4 @@
+# Only covers the most commonly used/important options
+
+# Macro
+echo && git log --all --shortstat --pretty=oneline --graph -n 15 && for i in $(seq 1 100); do echo -n -; done; echo && git branch -avv && for i in $(seq 1 100); do echo -n -; done; echo && git status

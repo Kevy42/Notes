@@ -1,0 +1,12 @@
+# Only covers the most commonly used/important options
+
+# Macro
+ping -b -H google.com # Macro
+
+ping
+    -b # Allow pinging of broadcast address
+    -c [COUNT] # Number of pings (count)
+    -H # Perform reverse DNS lookup on IPs
+    -f # Flood ping
+    -I [INTERFACE] # Interface, can be ip or name. Useful for bypassing some custom routing setups
+    -r # Bypass routing tables and send directly to host

@@ -1,0 +1,4 @@
+# Only covers the most commonly used/important options
+
+# Macro
+sudo tcpdump -e --interface any -n --direction inout -q -tttt

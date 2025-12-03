@@ -1,0 +1,4 @@
+# Only covers the most commonly used/important options
+
+# Macro
+sudo echo && sudo lsblk --output NAME,TRAN,HOTPLUG,RM,MODEL,PATH,TYPE,SIZE,PTTYPE,PARTTYPENAME,FSTYPE,FSSIZE,FSAVAIL,FSUSED,FSUSE%,UUID,LABEL,MOUNTPOINTS,FSROOTS && echo

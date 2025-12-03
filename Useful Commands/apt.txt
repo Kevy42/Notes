@@ -1,0 +1,5 @@
+# Only covers the most commonly used/important options
+
+# Macro
+# Basic debugging/must have packages
+sudo apt update && sudo apt install vim htop ethtool dnsutils tcpdump curl traceroute netcat-openbsd nmap strace tree lsof fastfetch

@@ -1,0 +1,15 @@
+# Only covers the most commonly used/important options
+
+# Macro
+ip -c -br n && echo && ip -c -br r && echo && ip -c -br a && echo && ip -c -br l
+
+sudo ip route \
+    add \
+    to [IP] \
+    metric 0 # Default \
+    table [NAME] # Usually "main" \
+    dev [INTERFACE] \
+    via [IP] \
+    src [IP] # Will limit the route to only being used if the interface has that IP \
+    scope link # "global" being the default \
+    protocol static # "static" meaing it was added by an admin

@@ -1,0 +1,4 @@
+# Only covers the most commonly used/important options
+
+# Macro
+sudo grep --ignore-case --color=auto --line-number --exclude-dir=.git --dereference-recursive "[TEXT]" .

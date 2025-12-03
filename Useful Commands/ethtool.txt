@@ -1,0 +1,7 @@
+# Only covers the most commonly used/important options
+
+sudo ethtool
+    --driver # Hardware info \
+    --show-permaddr [INTERFACE] # Show hardware MAC address \
+    --statistics \
+    --test [INTERFACE] [MODE] # Modes: offline, online, external_lb

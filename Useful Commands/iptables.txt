@@ -1,0 +1,4 @@
+# Only covers the most commonly used/important options
+
+# Macro
+sudo iptables --table filter --list --line-numbers --numeric --verbose
