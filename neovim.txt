@@ -1,0 +1,22 @@
+Somewhat obsecure yet obsecure Neovim tricks
+
+Native:
+    1. gO: see table of contents in help page
+    2. gx: open URL under cursor
+    3. gf: go to file under cursor
+
+LSP:
+    2. gD:           go to declaration (vim.lsp.buf.declaration())
+    1. gd:           go to definition (vim.lsp.buf.definition())
+    8. gq:           format (vim.lsp.buf.format())
+    7. K:            hover definition (vim.lsp.buf.hover())
+    4. grr:          list references (vim.lsp.buf.references()) (useful?)
+    3. grn:          rename (vim.lsp.buf.rename())
+    5. CTRL-W-]:     open definition in new window 
+    6. CTRL-W-}:     preview definition in new window (smaller window)
+    9. ]d:           Next diagnostic
+    10. [d:          Previous diagnostic
+    11. ]D:          Last diagnostic (needed?)
+    12. [D:          First diagnostic (needed?)
+    13. gq:          format text
+    14. K:           on visually selected text to open man-page
