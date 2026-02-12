@@ -1,9 +1,14 @@
-Somewhat obsecure yet obsecure Neovim tricks
+Somewhat useful yet obsecure Neovim tricks
 
-Native:
-    1. gO: see table of contents in help page
-    2. gx: open URL under cursor
-    3. gf: go to file under cursor
+General:
+    1. <C-w> v:        Vertical split
+    2. <C-w> s:        Horizontal split
+    3. <C-w> c:        Close window
+    4. <C-w> r:        Swap window positions
+    5. z=:             spelling suggestions
+    6. gO:             see table of contents in help page
+    7. gx:             open URL under cursor
+    8. gf:             go to file under cursor
 
 LSP:
     2. gD:           go to declaration (vim.lsp.buf.declaration())
@@ -20,3 +25,5 @@ LSP:
     12. [D:          First diagnostic (needed?)
     13. gq:          format text
     14. K:           on visually selected text to open man-page
+
+

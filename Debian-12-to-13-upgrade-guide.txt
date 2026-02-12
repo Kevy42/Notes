@@ -1,0 +1,37 @@
+Trixie update guide.
+
+
+Before
+    1. Update to latest release of Bookworm
+    2. Comment out Bookworm backports from apt sources
+    3. Remove/update any user added sources (e.g changing the docker added source to use trixie instead of bookworm)
+    4. Disable apt pinning
+    4. Disable any watchdog(s)
+    5. Run trixie upgrade in screen/tmux
+
+After:
+    1. Make sure systemd-cryptsetup is installed BEFORE rebooting if using an encrypted filesystem or anything to do with encrypted drives.
+    1. Re-enable trixie backports to apt sources
+    2. Enable watchdog(s)
+    3. Check kernel version, remove old kernels and make sure you've got the latest kernel metapackage
+    3. List and remove any obsolete packages using apt list '~o' and apt purge '~o'
+    3. run apt autopurge
+    3. Clean out old /tmp files located on disk by bind mounting the system and deleting. sudo mount --bind / /mnt
+    3. check if wtmpdb is installed and if not, remove the old /var/log/wtmp* log file
+    3. Remove /etc/tmpfiles.d/tmp.conf if present in order to adopt the new systemd-tmpfiles auto-clean scheme that's default on new installations
+    3. Switch to deb822 apt sources format, either manually or using apt modernize-sources
+    4. Switch to Debian APT CDN sources if using mirrors
+    3. Verify that timeshift works.
+    4. Verify grub-btrfs works.
+
+
+Notable changes:
+    wcurl replacement for wget.
+
+Fixes for common issues during upgrade:
+    1. E: Could not perform immediate configuration on 'package'. Please see man 5 apt.conf under APT::Immediate-Configure for details.
+        Fix: run apt full-upgrade -o APT::Immediate-Configure=0
+
+    2. Sometimes it’s necessary to enable the APT::Force-LoopBreak option in APT to be able to temporarily remove an essential package due to a Conflicts/Pre-Depends loop. apt will alert you of this and abort the upgrade. You can work around this by specifying the option -o APT::Force-LoopBreak=1 on the apt command line.
+
+    3.During an upgrade from the local console, the view may switch (e.g., when the display manager restarts). To return, press Ctrl+Alt+F1 in graphical mode or Alt+F1 in text mode, replacing F1 with the terminal number used. You can also switch between text consoles with Alt+←/→.

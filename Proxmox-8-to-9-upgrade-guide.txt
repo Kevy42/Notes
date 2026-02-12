@@ -1,0 +1,32 @@
+PVE 8 to 9 checklist:
+Notes:
+    1. DO NOT use the virtual console provided by the web ui as it'll get interrupted during the upgrade
+    2. UI inconsistencies may occur on clusts with nodes on verions 8 vs 9, Try not to perform any UI based actions until all nodes have been upgraded
+
+Update proccess:
+    1. Update all nodes to the latest versin of 8.x, check version using "pveversion"
+    2. Make sure to enable "main contrib non-free non-free-firmware" on Debian repos
+    3. run "pve8to9 --full" and resolve any issues
+    4. Update Debian and PVE repos with:
+        sed -i 's/bookworm/trixie/g' /etc/apt/sources.list
+        sed -i 's/bookworm/trixie/g' /etc/apt/sources.list.d/pve-enterprise.list
+
+    5. Run "apt update" and "apt policy", make sure there aren't any errors
+
+    6. Add the no-subscription repo using the new deb822 standard:
+        cat > /etc/apt/sources.list.d/proxmox.sources << EOF
+        Types: deb
+        URIs: http://download.proxmox.com/debian/pve
+        Suites: trixie
+        Components: pve-no-subscription
+        Signed-By: /usr/share/keyrings/proxmox-archive-keyring.gpg
+        EOF
+
+    7. Comment out the no subscription repo in /etc/apt/sources.list and run "apt update"
+    8. Run "apt dist-upgrade" in Tmux
+    9. Run "pve8to9 --full"
+    10. reboot
+    11. Run apt modernize sources and check /etc/apt, fix any inconsistencies
+    11. run "apt dist-upgrade" again and resolve any issues
+    12. Follow the Debian 12 to 13 upgrade guide
+
