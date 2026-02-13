@@ -1,0 +1,10 @@
+# Only covers the most commonly used/important options
+
+sudo
+    --preserve-env (-E) # preserve environment variables
+    --login (-i) # run the user's shell, e.g Bash
+    --reset-timestamp (-k) # invalidate authentication cache (ask for password upon next sudo invocation)
+    --list (-l) # list user the privilages
+    --stdin (-S) # read password from stdin
+
+    [COMMAND]
