@@ -1,0 +1,12 @@
+# Only covers the most commonly used/important options
+
+# Macro
+du --total --human-readable --summarize --time .[!.]* * | sort --human-numeric-sort
+sudo du -c -h -s --time .[!.]* * | sort -h
+
+du \
+  --total \
+  --human-readable \
+  --summarize \
+  --time \
+  .[!.]* * # Include dotfiles

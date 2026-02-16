@@ -9,6 +9,7 @@ General:
     6. gO:             see table of contents in help page
     7. gx:             open URL under cursor
     8. gf:             go to file under cursor
+    9. <C-6>:          move between current and previous file
 
 LSP:
     2. gD:           go to declaration (vim.lsp.buf.declaration())
