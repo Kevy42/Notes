@@ -149,7 +149,7 @@ echo "Starting temporary sshd instance..."
 # Check to make sure sshd starts correctly before comitting it to a background job as there's no (trivial) way of checking for errors in that state.
 # sshd exit code is returned unless the timeout is triggered, which it should under normal circumstances given sshd simply blocks after having started correctly.
 sshd_exit_code=$(
-    sudo timeout --kill-after 60s 5s /usr/sbin/sshd -D -o ListenAddress=127.0.0.1 -p $sshd_listen_port &>/dev/null
+    sudo timeout --kill-after 60s 5s /usr/sbin/sshd -D -o ListenAddress=127.0.0.1 -p "$sshd_listen_port" &>/dev/null
     echo $?
 )
 
@@ -163,7 +163,7 @@ if ((sshd_exit_code != 124)); then # The default timeout exceeded code
     exit 1
 fi
 
-sudo timeout --kill-after 60s 24.5h /usr/sbin/sshd -D -o ListenAddress=127.0.0.1 -p $sshd_listen_port &>/dev/null & # 24h as a security precatuion in the case machine is left unattended
+sudo timeout --kill-after 60s 24.5h /usr/sbin/sshd -D -o ListenAddress=127.0.0.1 -p "$sshd_listen_port" &>/dev/null & # 24h as a security precatuion in the case machine is left unattended
 
 read -a ssh_args -r -p "Enter SSH remote (write the command like you normally would): "
 declare -a -r ssh_args=("${ssh_args[@]:1}") # Remove first index ("ssh") to get arguments only
@@ -175,5 +175,5 @@ timeout \
     ssh \
     -N \
     -o ConnectTimeout=10 \
-    -R 127.0.0.1:$remote_listen_port:127.0.0.1:$sshd_listen_port \
+    -R "127.0.0.1:$remote_listen_port:127.0.0.1:$sshd_listen_port" \
     "${ssh_args[@]}"
