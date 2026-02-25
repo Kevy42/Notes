@@ -1,5 +1,23 @@
 #!/usr/bin/env bash
 
+# NOTE: Script can be ran with this single command
+: <<'COMMENT'
+
+curl \
+    --fail \
+    --show-error \
+    --silent \
+    https://raw.githubusercontent.com/Kevy42/Notes/refs/heads/main/Scripts/SPRSP.sh \
+    --output /tmp/SPRSP.sh && \
+
+chmod ugo+x /tmp/SPRSP.sh && \
+
+/tmp/SPRSP.sh; \
+
+rm /tmp/SPRSP.sh
+
+COMMENT
+
 set -e -u -E -T -o pipefail
 
 declare -i -r sshd_listen_port=42420
