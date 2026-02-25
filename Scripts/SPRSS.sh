@@ -8,13 +8,13 @@ curl \
     --show-error \
     --silent \
     https://raw.githubusercontent.com/Kevy42/Notes/refs/heads/main/Scripts/SPRSP.sh \
-    --output /tmp/SPRSP.sh && \
+    --output /tmp/SPRSS.sh && \
 
-chmod ugo+x /tmp/SPRSP.sh && \
+chmod ugo+x /tmp/SPRSS.sh && \
 
-/tmp/SPRSP.sh; \
+/tmp/SPRSS.sh; \
 
-rm /tmp/SPRSP.sh
+rm /tmp/SPRSS.sh
 
 COMMENT
 
