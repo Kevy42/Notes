@@ -165,7 +165,7 @@ fi
 
 sudo timeout --kill-after=60s 24.5h /usr/sbin/sshd -D -o ListenAddress=127.0.0.1 -p "$sshd_listen_port" &>/dev/null & # 24h as a security precatuion in the case machine is left unattended
 
-read -a ssh_args -r -p "Enter SSH remote (write the command like you normally would): "
+read -a ssh_args -r -p "Enter SSH remote (write the SSH command like you normally would): "
 
 if [[ ${ssh_args[0]} == "ssh" ]]; then
     declare -a -r ssh_args=("${ssh_args[@]:1}") # Remove first index ("ssh") if needed
