@@ -166,7 +166,7 @@ fi
 sudo timeout --kill-after 60s 24.5h /usr/sbin/sshd -D -o ListenAddress=127.0.0.1 -p $sshd_listen_port &>/dev/null & # 24h as a security precatuion in the case machine is left unattended
 
 read -a ssh_args -r -p "Enter SSH remote (write the command like you normally would): "
-declare -r -a ssh_args=("${ssh_args[@]:1}") # Remove first index ("ssh") to get arguments only
+declare -a -r ssh_args=("${ssh_args[@]:1}") # Remove first index ("ssh") to get arguments only
 
 echo "starting reverse forward (ssh -R 127.0.0.1:$remote_listen_port:127.0.0.1:$sshd_listen_port). No further output (beyond any login prompts) expected. CTRL-C *once* to exit"
 timeout \
