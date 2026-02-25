@@ -175,5 +175,5 @@ timeout \
     ssh \
     -N \
     -o ConnectTimeout=10 \
-    -R "127.0.0.1:$remote_listen_port:127.0.0.1:$sshd_listen_port" \
+    -R 127.0.0.1:"$remote_listen_port":127.0.0.1:"$sshd_listen_port" \
     "${ssh_args[@]}"
