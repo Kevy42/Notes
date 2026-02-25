@@ -7,7 +7,7 @@ curl \
     --fail \
     --show-error \
     --silent \
-    https://raw.githubusercontent.com/Kevy42/Notes/refs/heads/main/Scripts/SPRSP.sh \
+    https://raw.githubusercontent.com/Kevy42/Notes/refs/heads/main/Scripts/SPRSS.sh \
     --output /tmp/SPRSS.sh && \
 
 chmod ugo+x /tmp/SPRSS.sh && \
