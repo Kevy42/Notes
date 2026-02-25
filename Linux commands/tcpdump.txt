@@ -1,4 +1,5 @@
 # Only covers the most commonly used/important options
 
-# Macro
+# Macros
 sudo tcpdump -e --interface any -n --direction inout -q -tttt
+sudo tcpdump -e --interface any -n --print --direction inout -q -tttt --packet-buffered -w "/tmp/tcpdump_$(printf '%(%Y-%m-%d_%H-%M-%S)T' -1).pcap" # NOTE: setting interface to "any" will result in the destination MAC address not being recorded to the pcap
