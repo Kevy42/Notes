@@ -130,17 +130,17 @@ echo "Starting temporary sshd instance..."
 
 # Check to make sure sshd starts correctly before comitting it to a background job as there's no (trivial) way of checking for errors in that state.
 # sshd exit code is returned unless the timeout is triggered, which it should under normal circumstances given sshd simply blocks after having started correctly.
-exit_code=$(
+sshd_exit_code=$(
     sudo timeout --kill-after 60s 5s /usr/sbin/sshd -D -o ListenAddress=127.0.0.1 -p $sshd_listen_port &>/dev/null
     echo $?
 )
 
-if ((exit_code == 255)); then # Technically an umbrella code for various errors, but eh...
+if ((sshd_exit_code == 255)); then # Technically an umbrella code for various errors, but eh...
     echo "Failed to start temporary sshd instance, listen port in use?"
     exit 1
 fi
 
-if ((exit_code != 124)); then # The default timeout exceeded code
+if ((sshd_exit_code != 124)); then # The default timeout exceeded code
     echo "Failed to start temporary sshd instance"
     exit 1
 fi
