@@ -1,6 +1,5 @@
 Trixie update guide.
 
-
 Before
     1. Update to latest release of Bookworm
     2. Comment out Bookworm backports from apt sources

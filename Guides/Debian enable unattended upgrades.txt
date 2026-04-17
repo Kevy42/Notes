@@ -88,6 +88,8 @@ Instructions:
         APT::Periodic::AutocleanInterval "90";
         APT::Periodic::CleanInterval "90";
 
-    4. Edit apt-daily-upgrade.timer in order to customize the timing of the upgrades via "OnCalendar=*-*-* 6:00"
+    4. Edit apt-daily-upgrade.timer in order to customize the timing of the upgrades. Make sure to add "OnCalendar=" in order to clear the previous setting.
+    5. Restart apt-daily-upgrade.timer and check the status to make sure no config errors are present.
     5. Run "sudo unattended-upgrade --debug --dry-run" and verify that everything's working.
+    6. Reboot
 
