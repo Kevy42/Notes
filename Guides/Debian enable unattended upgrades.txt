@@ -1,0 +1,93 @@
+Prerequisite Info:
+    1. Unattended upgrades are performed by the unattended-upgrades package (which creates the /etc/apt/apt.conf.d/50unattended-upgrades config file upon installation)
+    2. The two main config files read by unattended-upgrades reside under /etc/apt/apt.conf.d/ and are called 20auto-upgrades and 50unattended-upgrades. The options for 20auto-upgrades are, for some fucking reason, documented at the top of the /usr/lib/apt/apt.systemd.daily script.
+    3. unattended-upgrades itself gets invoked by the /usr/lib/apt/apt.systemd.daily script which is called by the apt-daily.service and apt-daily-upgrade.service services (each with their own accompanying .timers) using different flags for running apt update vs apt upgrade.
+        Control flow:
+            apt-daily-upgrade.timer -> apt-daily-upgrade.service -> apt.systemd.daily (script) -> unattended-upgrades
+            NOTE: The only determining factors for if unattended upgrades will occure are the config files. The timers will always be enabled, even if unattended-upgrades isn't installed.
+
+    4. "sudo dpkg-reconfigure unattended-upgrades" can be run in order to generate the 20auto-upgrades config file.
+
+Instructions:
+    1. Make sure the unattended-upgrades and debdelta packages are installed.
+
+    2. Create a 50unattended-upgrades fragment file (e.g 51unattended-upgrades-local) and customize the following config to your needs:
+        Unattended-Upgrade::Origins-Pattern {
+            // Covers all the common Debian suits and components
+            "origin=Debian,codename=${distro_codename},label=Debian";
+            "origin=Debian,codename=${distro_codename}-updates,label=Debian";
+            "origin=Debian,codename=${distro_codename}-security,label=Debian-Security";
+
+            // Or match all
+            // "origin=*";
+        };
+
+        // Runs "dpkg --force-confold --configure -a" upon unclean dpkg exit. Default = true
+        Unattended-Upgrade::AutoFixInterruptedDpkg "true";
+
+        // Split the upgrade into the smallest possible chunks so that
+        // they can be interrupted with SIGTERM. This makes the upgrade
+        // a bit slower but it has the benefit that shutdown while an upgrade
+        // is running is possible (with a small delay)
+        Unattended-Upgrade::MinimalSteps "true";
+
+        // Remove unused automatically installed kernel-related packages
+        // (kernel images, kernel headers and kernel version locked tools).
+        Unattended-Upgrade::Remove-Unused-Kernel-Packages "true";
+
+        // Automatic removal of newly unused dependencies after the upgrade
+        Unattended-Upgrade::Remove-New-Unused-Dependencies "true";
+
+        // Do automatic removal of unused packages after the upgrade
+        // (equivalent to apt-get autoremove)
+        Unattended-Upgrade::Remove-Unused-Dependencies "true";
+
+        // Automatically reboot *WITHOUT CONFIRMATION* if
+        //  the file /var/run/reboot-required is found after the upgrade
+        Unattended-Upgrade::Automatic-Reboot "true";
+
+        // Automatically reboot even if there are users currently logged in
+        // when Unattended-Upgrade::Automatic-Reboot is set to true
+        Unattended-Upgrade::Automatic-Reboot-WithUsers "false";
+
+        // If automatic reboot is enabled and needed, reboot at the specific
+        // time instead of immediately
+        //  Default: "now"
+        Unattended-Upgrade::Automatic-Reboot-Time "04:00";
+
+        // Apt bandwidth limit, 100 Mbps
+        Acquire::http::Dl-Limit "100000";
+
+        // Enable logging to syslog. Default is False
+        Unattended-Upgrade::SyslogEnable "true";
+
+        // Download and install upgrades only on AC power
+        // (i.e. skip or gracefully stop updates on battery)
+        Unattended-Upgrade::OnlyOnACPower "false";
+
+        // Download and install upgrades only on non-metered connection
+        // (i.e. skip or gracefully stop updates on a metered connection)
+        Unattended-Upgrade::Skip-Updates-On-Metered-Connections "true";
+
+        // Verbose logging
+        Unattended-Upgrade::Verbose "false";
+
+    3. Generate the 20auto-upgrades config file by running "sudo dpkg-reconfigure unattended-upgrades" and selecting "Yes" when prompted to enable automatic updates,
+       then follow the instructions outlined in step 2 to create a fragment file and customize the following config to your needs:
+
+        // NOTE: Options set to "always" so trigger time is managed by apt-daily-upgrade.timer
+        APT::Periodic::Update-Package-Lists "always";
+
+        // Download packages (e.g using apt-get upgrade --download-only) before performing the update in order to increase robustness
+        APT::Periodic::Download-Upgradeable-Packages "always";
+
+        // Use debdelta to minimize download size by only downloading deltas
+        APT::Periodic::Download-Upgradeable-Packages-Debdelta "1";
+
+        APT::Periodic::Unattended-Upgrade "always";
+        APT::Periodic::AutocleanInterval "90";
+        APT::Periodic::CleanInterval "90";
+
+    4. Edit apt-daily-upgrade.timer in order to customize the timing of the upgrades via "OnCalendar=*-*-* 6:00"
+    5. Run "sudo unattended-upgrade --debug --dry-run" and verify that everything's working.
+
