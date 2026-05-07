@@ -1,5 +1,3 @@
-Somewhat useful yet obsecure Neovim tricks
-
 General:
     1. <C-w> v:        Vertical split
     2. <C-w> s:        Horizontal split
@@ -18,7 +16,7 @@ LSP:
     7. K:            hover definition (vim.lsp.buf.hover())
     4. grr:          list references (vim.lsp.buf.references()) (useful?)
     3. grn:          rename (vim.lsp.buf.rename())
-    5. CTRL-W-]:     open definition in new window 
+    5. CTRL-W-]:     open definition in new window
     6. CTRL-W-}:     preview definition in new window (smaller window)
     9. ]d:           Next diagnostic
     10. [d:          Previous diagnostic
