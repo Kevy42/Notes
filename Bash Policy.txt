@@ -1,0 +1,39 @@
+Policy:
+    1. Use "#!/usr/bin/env bash" for generic one-offs in order to get maximum portability and customizability and "#!/usr/bin/bash" for proper admin scripts and Debian Binary packages.
+    2. Use the following "set" and "shopt" template for best combo of strictness and functionality:
+
+        # Relevant options to go through and enable/disable. Don't forget to remove this comment when done :)
+        set \
+            -o errexit \        # -e. Exit upon non-zero command exit
+            -o noglob \         # -f. Disable pathname expansions. Remove if needed
+            # -o monitor \      # -m. Enable job control. Recommend removing
+            -r \                # -r. Restricted mode. Remove if needed
+            -o nounset \        # -u. Treat unset variables as errors
+            # -o verbose \      # -v. Print unexpanded commands before executing them. Enable for debugging
+            # -o xtrace \       # -x. Print expanded commands before executing them. Enable for debugging
+            +o braceexpand \    # -B. Disable brace expansion. Remove if needed
+            -o noclobber \      # -C. Disable overwriting existing files with >, >&, and <> redirection operators. Remove if needed
+            -o errtrace \       # -E. Make functions, command substitutions and commands executed in subshells inherit the ERR trap. Use with "-o errexit"
+            -o physical \       # -P. Don't resolve symlinks when using commands like "cd". Remove if needed
+            -o pipefail \       # Return non-zero if any of the commands in a pipeline fail
+            -o functrace        # -T. Make functions, command substitutions and commands executed in subshells inherit the DEBUG and RETURN traps
+
+        # shopt -s dotglob         # Include dotfiles in pathname expansions. Recommend keeping disabled
+        # shopt -s expand_aliases  # Recommend keeping disabled
+        # shopt -s extglob         # Enable extended globbing features. Recommend keeping disabled
+        shopt -s failglob          # Throw error when pathname expansion fails to find any files. Remove if needed
+        # shopt -s globstar        # Enable using "**" to recursively match all files and directories. Useful in combination with globdot. Keep disabled if not needed
+        shopt -s inherit_errexit   # Applies errexit to command substitutions
+        shopt -s nullglob          # replace pathname expansion with null if it cannot find any files. "failglob" takes precedence if enabled
+        shopt -s shift_verbose     # Make the shift builtin print an error message when the count exceeds the number of positional parameters
+        shopt -u sourcepath        # Disable automatically searching $PATH when sourcing (using "source") files. Enable if needed
+        shopt -s varredir_close    # Automatically close file descriptors opened with {fd}>file redirection after the command completes
+
+    3. Use "--" to denote the end of a command's arguments wherever needed
+    4. Use mktemp to create temporary files and directories
+
+Recommendations:
+
+Tricks:
+    1. You can trap "EXIT" as a pseudo-signal which will trigger upon the script exiting for any reason
+    2. Use checkbashisms to check if script is using any Bash-specific features that may not be portable to other shells

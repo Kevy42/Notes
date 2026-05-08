@@ -1,3 +1,0 @@
-1. Use "--" to denote the end of a command's arguments wherever needed
-2. You can trap "EXIT" as a pseudo-signal which will trigger upon the script exiting for any reason
-3. Use mktemp to create temporary files and directories
