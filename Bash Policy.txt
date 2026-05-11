@@ -12,7 +12,7 @@ Policy:
             # -o verbose \      # -v. Print unexpanded commands before executing them. Enable for debugging
             # -o xtrace \       # -x. Print expanded commands before executing them. Enable for debugging
             +o braceexpand \    # -B. Disable brace expansion. Remove if needed
-            -o noclobber \      # -C. Disable overwriting existing files with >, >&, and <> redirection operators. Remove if needed
+            -o noclobber \      # -C. Disable overwriting existing files with >, >&, and <> redirection operators (use >| instead). Remove if needed
             -o errtrace \       # -E. Make functions, command substitutions and commands executed in subshells inherit the ERR trap. Use with "-o errexit"
             -o physical \       # -P. Don't resolve symlinks when using commands like "cd". Remove if needed
             -o pipefail \       # Return non-zero if any of the commands in a pipeline fail
