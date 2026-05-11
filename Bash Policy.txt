@@ -2,21 +2,36 @@ Policy:
     1. Use "#!/usr/bin/env bash" for generic one-offs in order to get maximum portability and customizability and "#!/usr/bin/bash" for proper admin scripts and Debian Binary packages.
     2. Use the following "set" and "shopt" template for best combo of strictness and functionality:
 
-        # Relevant options to go through and enable/disable. Don't forget to remove this comment when done :)
+        # Relevant "set" and "shopt" options:
+
+        # errexit. -e.          Exit upon non-zero command exit
+        # noglob. -f.           Disable pathname expansions. Remove if needed
+        # monitor. -m.          Enable job control. Recommend removing
+        # -r. Restricted mode.  Remove if needed
+        # nounset. -u.          Treat unset variables as errors
+        # verbose. -v.          Print unexpanded commands before executing them. Enable for debugging
+        # xtrace. -x.           Print expanded commands before executing them. Enable for debugging
+        # braceexpand. -B.      Disable brace expansion. Remove if needed
+        # noclobber. -C.        Disable overwriting existing files with >, >&, and <> redirection operators (use >| instead). Remove if needed
+        # errtrace. -E.         Make functions, command substitutions and commands executed in subshells inherit the ERR trap. Use with "-o errexit"
+        # physical. -P.         Don't resolve symlinks when using commands like "cd". Remove if needed
+        # pipefail.             Return non-zero if any of the commands in a pipeline fail
+        # functrace. -T.        Make functions, command substitutions and commands executed in subshells inherit the DEBUG and RETURN traps
+
         set \
-            -o errexit \        # -e. Exit upon non-zero command exit
-            -o noglob \         # -f. Disable pathname expansions. Remove if needed
-            # -o monitor \      # -m. Enable job control. Recommend removing
-            -r \                # -r. Restricted mode. Remove if needed
-            -o nounset \        # -u. Treat unset variables as errors
-            # -o verbose \      # -v. Print unexpanded commands before executing them. Enable for debugging
-            # -o xtrace \       # -x. Print expanded commands before executing them. Enable for debugging
-            +o braceexpand \    # -B. Disable brace expansion. Remove if needed
-            -o noclobber \      # -C. Disable overwriting existing files with >, >&, and <> redirection operators (use >| instead). Remove if needed
-            -o errtrace \       # -E. Make functions, command substitutions and commands executed in subshells inherit the ERR trap. Use with "-o errexit"
-            -o physical \       # -P. Don't resolve symlinks when using commands like "cd". Remove if needed
-            -o pipefail \       # Return non-zero if any of the commands in a pipeline fail
-            -o functrace        # -T. Make functions, command substitutions and commands executed in subshells inherit the DEBUG and RETURN traps
+            -o errexit \
+            -o noglob \
+            # -o monitor \
+            -r \
+            -o nounset \
+            # -o verbose \
+            # -o xtrace \
+            +o braceexpand \
+            -o noclobber \
+            -o errtrace \
+            -o physical \
+            -o pipefail \
+            -o functrace
 
         # shopt -s dotglob         # Include dotfiles in pathname expansions. Recommend keeping disabled
         # shopt -s expand_aliases  # Recommend keeping disabled
