@@ -1,0 +1,13 @@
+Packet traversal table ordering:
+    Raw
+    Mangle
+    NAT
+    Filter
+    Security
+
+Chains:
+    PREROUTING
+    INPUT
+    FORWARD
+    OUTPUT
+    POSTROUTING
