@@ -1,7 +1,6 @@
-Tools:
-    Formatter
-    Parser
-    Language Server
-    Linter
-    Debugger
-    AI
+1. Formatter
+2. Parser
+3. Language Server
+4. Linter
+5. Debugger
+6. AI
