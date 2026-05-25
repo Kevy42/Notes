@@ -44,9 +44,9 @@ Policy:
         shopt -u sourcepath        # Disable automatically searching $PATH when sourcing (using "source") files. Enable if needed
         shopt -s varredir_close    # Automatically close file descriptors opened with {fd}>file redirection after the command completes
 
-    3. Chroot the script to it's working directory if feasible.
-    4. Use "--" to denote the end of a command's arguments wherever needed
-    5. Use mktemp to create temporary files and directories
+    3. Use "--" to denote the end of a command's arguments wherever needed
+    4. Use mktemp to create temporary files and directories
+    5. Error messages must be redirected to stderr
 
 Recommendations:
 
