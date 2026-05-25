@@ -1,0 +1,35 @@
+1. Brace expansion
+   {0..10} -> 0 1 2 3 4 5 6 7 8 9 10
+
+2. Tilde expansion
+   ~ → /home/currentuser
+
+3. Parameter, Command, Arithmetic, and Process expansions
+
+   Parameter expansion:
+   $HOME -> /home/currentuser
+   ${var} / ${var:-default} / ${#var} etc.
+
+   Command substitution:
+   $(date) -> Mon May 25 14:28:45 CEST 2026
+   Output replaces the construct; trailing newlines are removed.
+
+   Arithmetic expansion:
+   $((5 + 3 * 2)) -> 11
+
+   Process substitution:
+   <(cmd) -> /dev/fd/63
+
+   Results from earlier elements in this phase can feed later ones in the same token.
+
+4. Word splitting
+   $var (where var="a b c") -> a b c
+   Quoted expansions ("$var") bypass this entirely.
+
+5. Pathname expansion (globbing)
+   /* -> /bin /boot /dev /etc
+   Only unquoted patterns trigger filesystem matching.
+
+6. Quote removal
+   "file name" -> file name
+   Strips protective " and ' characters after all expansions complete.
