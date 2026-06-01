@@ -2,7 +2,7 @@ Policy:
     1. Use "#!/usr/bin/env bash" for generic one-offs in order to get maximum portability and customizability and "#!/usr/bin/bash" for proper admin scripts and Debian Binary packages.
     2. Use the following "set" and "shopt" template for best combo of strictness and functionality:
 
-        # Relevant "set" and "shopt" options:
+        # Relevant shell options:
 
         # errexit. -e.          Exit upon non-zero command exit
         # noglob. -f.           Disable pathname expansions. Remove if needed
