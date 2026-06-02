@@ -3,7 +3,7 @@
 # Macro
 ip -c -br n && echo && ip -c -br r && echo && ip -c -br a && echo && ip -c -br l
 
-sudo ip route \
+ip route \
     add \
     to [IP] \
     metric 0 # Default \
