@@ -1,0 +1,6 @@
+1. Question your constraints
+2. Delete
+3. Simplify
+4. Optimize
+5. Accelerate
+6. Automate

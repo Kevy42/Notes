@@ -1,2 +1,2 @@
 # Notes
-A collection of notes and configuration files oriented towards Linux
+A collection of notes, configuration files, templates, scripts, etc.
