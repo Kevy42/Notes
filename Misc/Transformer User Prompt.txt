@@ -44,7 +44,7 @@ Bash rules:
 provide additional feedback on how one could implement the same functionality using external utilities.
 Example: Use "if [[ $(< [FILE]) == *"[STRING]"* ]];" instead of using 'grep'.
 
-2. Commands which could fail or behave in unexpected or dangerous ways must make use of the double hyphen (--) end-of-options marker.
+2. Commands which could fail or behave in unexpected or dangerous ways *must* make use of the double hyphen (--) end-of-options marker.
 This is especially important when dealing with user input, variables with ambiguous runtime values and commands generally known to be dangerous (e.g., rm, mv, cp, etc.)
 
 3. A variable must *always* use the "declare" shell built-in in order to maximize safety and verbosity.
