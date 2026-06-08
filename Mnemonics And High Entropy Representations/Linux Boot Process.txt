@@ -1,0 +1,11 @@
+POST ->
+   UEFI ->
+       Bootloader (EFI application) ->
+           Kernel ->
+               initramfs ->
+                   PID 1 (systemd) ->
+                       default.target (symlink, located at /usr/lib/systemd/system/default.target) ->
+                           graphical.target ->
+                               multi-user.target ->
+                                   ...
+
