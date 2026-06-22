@@ -1,0 +1,8 @@
+# Only covers the most commonly used/important options
+
+maman
+    -f, --whatis                     # Display manual page description (the one under "NAME" header). Approximately equivalent to whatis(1).
+    -k, --apropos                    # Search through manual page names and descriptions using regex and display them. Approximately equivalent to apropos(1).
+    -K, --global-apropos             # Search through all manual page texts and display all that match, one by one. Uses bruteforce search that can take a while; advised to narrow down search space
+                                       by specifying a section. Supports regular expressions with --regex. Note: searches the manpage sources, *not* the rendered texts.
+    -w, --where, --path, --location  # Display path of manual page instead its the contents. Useful when combined with -K to list all manpage files with keyword inside.
