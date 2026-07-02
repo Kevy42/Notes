@@ -1,5 +1,0 @@
-# Only covers the most commonly used/important options
-
-mktemp \
-  --directory # Create dir instead \
-  --quiet
