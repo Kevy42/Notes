@@ -1,0 +1,31 @@
+Scheduling Options:
+    1. idle
+    2. other
+    3. batch
+    4. rr
+    5. fifo
+    6. deadline
+
+Priority ordering (lowest to highest):
+    With static priority 0:
+        - idle
+        - other and batch
+
+        Notes:
+            - The "nice" value sets the priority within this category, with tasks (threads) of lower value preempting ones with higher, except for with "idle" which remains unaffected, always having the lowest priority.
+            - "nice" value range: -20 - +19.
+
+    With static priority 1 - 99:
+        - rr and fifo
+
+        Notes:
+            - The "static priority" sets the priority within this category, with tasks (threads) of higher value preempting ones with lower.
+            - "fifo" has a slight precedence given it allows for the task (thread) to run indefinitely (unless a higher static priority task exists) where as the OS will eventually preempt it after a certain time slince with "rr".
+
+    3. deadline
+
+Simplified priority list (lowest to highest):
+    1. idle
+    2. other and batch ("nice" sets precedence within)
+    3. rr and fifo ("static priority" sets precedence within)
+    4. deadline
