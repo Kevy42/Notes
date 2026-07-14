@@ -1,31 +1,32 @@
 Scheduling Options:
-    1. idle
-    2. other
-    3. batch
-    4. rr
-    5. fifo
-    6. deadline
+    1. idle:                        Lowest priority, only runs the task when no other tasks are runnable (e.g., when the CPU would otherwise be idle).
+    2. other:                       Default "fair" scheduling policy for normal tasks. Uses "nice" value for dynamic priority adjustments.
+    3. batch:                       For non-interactive, CPU-intensive tasks. Uses "nice" value for dynamic priority adjustments.
+    4. rr (Round Robin):            Realtime, runs the task to for a fixed time slice before preempting and placing it at the end of the queue. Uses "static priority" value for priority adjustments.
+    5. fifo (First In, First Out):  Realtime, runs the task indefinitely until it voluntarily yields or is preempted by a higher priority task. Uses "static priority" value for priority adjustments.
+    6. deadline:                    Realtime, allows the task to specify a deadline for completion, very rarely used.
 
-Priority ordering (lowest to highest):
-    With static priority 0:
+Option Priority ordering (lowest to highest):
+    With "static priority" of 0:
         - idle
-        - other and batch
+        - other/batch
 
         Notes:
-            - The "nice" value sets the priority within this category, with tasks (threads) of lower value preempting ones with higher, except for with "idle" which remains unaffected, always having the lowest priority.
+            - The "nice" value sets the priority within this category, with tasks (threads) of lower value preempting ones with higher,
+              except for with "idle" which remains unaffected, always having the lowest priority.
+
             - "nice" value range: -20 - +19.
 
-    With static priority 1 - 99:
-        - rr and fifo
+    With "static priority" of 1 - 99:
+        - rr/fifo
 
         Notes:
             - The "static priority" sets the priority within this category, with tasks (threads) of higher value preempting ones with lower.
-            - "fifo" has a slight precedence given it allows for the task (thread) to run indefinitely (unless a higher static priority task exists) where as the OS will eventually preempt it after a certain time slince with "rr".
 
-    3. deadline
+    - deadline
 
-Simplified priority list (lowest to highest):
+Simplified Option Priority ordering (lowest to highest):
     1. idle
-    2. other and batch ("nice" sets precedence within)
-    3. rr and fifo ("static priority" sets precedence within)
+    2. other/batch ("nice" sets precedence within)
+    3. rr/fifo ("static priority" sets precedence within)
     4. deadline
