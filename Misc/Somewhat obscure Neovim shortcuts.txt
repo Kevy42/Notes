@@ -11,6 +11,7 @@ General:
     10. z[hl]:         Move viewport left/right by one character
     11. z[HL]:         Move viewport left/right by half a screen width
     12. [[ ]]:         Move between sections
+    13. <C-f>          In command or search mode to view history
 
 LSP:
     2. gD:           Go to declaration (vim.lsp.buf.declaration())
