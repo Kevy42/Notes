@@ -1,0 +1,7 @@
+Add the following options to the kernel command-line parameters:
+    zswap.enabled=1
+    zswap.max_pool_percent=30
+    zswap.compressor=lzo
+    zswap.shrinker_enabled=1
+
+Note: check the supported compression algorithnms before using via: cat /proc/crypto
