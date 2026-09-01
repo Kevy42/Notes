@@ -1,7 +1,27 @@
 # Only covers the most commonly used/important options
 
 # Macro
-ip -c -br n && echo && ip -c -br r && echo && ip -c -br a && echo && ip -c -br l
+ip -d -c -br n && echo && ip -d -c -br r && echo && ip -d -c -br a && echo && ip -d -c -br l
+
+ip -r/--resolve # Attempt to resolve addresses to DNS names
+ip -n/--netns   # Shows output for specified network namespace
+
+# Add IP to interface
+ip address add \
+    local [ADDRESS/PREFIX] \
+    broadcast [BROADCAST ADDRESS] \  # Optional. Can be set to "+" or "-" in order to derive it from the local [ADDRESS/PREFIX]
+    scope [SCOPE] \                  # Optinal. Affects address selection and routing, can be "global", "link" or "host". "link" is only accessible on this layer 2 segment (e.g., 169.254.0.0/16) and "host" only this machine (i.e., loopback)
+    dev [INTERFACE] \
+    valid_lft [LFT] \                # Optinal. How long the IP is valid for
+    preferred_lft [LFT]              # Optinal. How long before the IP is considered "deprecated" and ceases to be used for new outgoing connections
+
+
+
+# Save and restore IP state
+ip a save dev [INTERFACE] > ip-backup.txt
+ip a restore < ip-backup.txt
+
+
 
 ip route \
     add \
@@ -13,3 +33,7 @@ ip route \
     src [IP] # Will limit the route to only being used if the interface has that IP \
     scope link # "global" being the default \
     protocol static # "static" meaing it was added by an admin
+
+General info:
+    1. View Policy routing table mappings: /usr/share/iproute2/rt_tables
+    2. View route "proto" types /usr/share/iproute2/rt_protos

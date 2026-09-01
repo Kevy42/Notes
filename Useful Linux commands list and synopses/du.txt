@@ -5,8 +5,8 @@ du --total --human-readable --summarize --time .[!.]* * | sort --human-numeric-s
 sudo du -c -h -s --time .[!.]* * | sort -h
 
 du \
-  --total \
-  --human-readable \
-  --summarize \
-  --time \
-  .[!.]* * # Include dotfiles
+    --total \
+    --human-readable \
+    --summarize \
+    --time \
+    .[!.]* * # Include dotfiles

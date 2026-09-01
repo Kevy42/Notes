@@ -1,6 +1,6 @@
 # Only covers the most commonly used/important options
 
-maman
+man
     -f, --whatis                     # Display manual page description (the one under "NAME" header). Approximately equivalent to whatis(1).
     -k, --apropos                    # Search through manual page names and descriptions using regex and display them. Approximately equivalent to apropos(1).
     -K, --global-apropos             # Search through all manual page texts and display all that match, one by one. Uses bruteforce search that can take a while; advised to narrow down search space
