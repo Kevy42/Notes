@@ -15,12 +15,25 @@ ip address add \
     valid_lft [LFT] \                # Optinal. How long the IP is valid for
     preferred_lft [LFT]              # Optinal. How long before the IP is considered "deprecated" and ceases to be used for new outgoing connections
 
+# Save, view and restore IP state
+ip address save dev [INTERFACE] > ip-backup.txt
+ip address showdump < ip-backup.txt
+ip address restore < ip-backup.txt
 
+# Add interface
+ip link add \
+    [INTERFACE] \
+    name [INTERFACE NAME] \  # Sometimes required
+    type [TYPE] \
+    [TYPE SPECIFIC OPTIONS]  # Check ip-link(8)
 
-# Save and restore IP state
-ip a save dev [INTERFACE] > ip-backup.txt
-ip a restore < ip-backup.txt
-
+# Add interface that's physically linked to another (e.g., of type vlan)
+ip link add
+    link
+    [PHYSICAL INTERFACE]   # Physical interface to link to
+    name [INTERFACE NAME]  # Interface to be created
+    type [TYPE]
+    [TYPE SPECIFIC OPTIONS]  # Check ip-link(8)
 
 
 ip route \
