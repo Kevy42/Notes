@@ -20,21 +20,34 @@ ip address save dev [INTERFACE] > ip-backup.txt
 ip address showdump < ip-backup.txt
 ip address restore < ip-backup.txt
 
-# Add interface
+# Add interface. Check ip-link(8) for full syntax
 ip link add \
     [INTERFACE] \
     name [INTERFACE NAME] \  # Sometimes required
     type [TYPE] \
-    [TYPE SPECIFIC OPTIONS]  # Check ip-link(8)
+    [TYPE SPECIFIC OPTIONS]
 
-# Add interface that's physically linked to another (e.g., of type vlan)
+# Add interface that's physically linked to another (e.g., of type vlan). Check ip-link(8) for full syntax
 ip link add
     link
     [PHYSICAL INTERFACE]   # Physical interface to link to
     name [INTERFACE NAME]  # Interface to be created
     type [TYPE]
-    [TYPE SPECIFIC OPTIONS]  # Check ip-link(8)
+    [TYPE SPECIFIC OPTIONS]
 
+# Bring interface up/down
+ip link set dev [INTERFACE] { up | down }
+
+# Change interface settings
+ip link set
+    dev [INTERFACE]
+    [SETTING] { on | off | STRING | NUMBER }  # Relevant settigns: "arp", "multicast", "allmulticast", "promisc", "name", "mtu", "address", "broadcast", "alias", "master", "nomaster", "addrgenmode". "nomaster" takes no arguments.
+
+# Change interface type specific settings
+ip link set
+    dev [INTERFACE]
+    type [TYPE]
+    [TYPE SPECIFIC OPTIONS]
 
 ip route \
     add \
