@@ -1,0 +1,25 @@
+1. Create SWAP file
+    sudo mkswap --label swap --verbose --size [SIZE]GiB --file /swapfile
+
+2. Enable it temporarily for testing using several command line varients in order to make sure all options work. [PRIORITY] must be between 0 - 32767
+    sudo swapon --discard=once --priority [PRIORITY] --verbose /swapfile
+    sudo swapon --output-all
+    sudo swapoff /swapfile
+
+    sudo swapon --options=nofail,discard=once,pri=[PRIORITY] --verbose /swapfile
+    sudo swapon --output-all
+    sudo swapoff /swapfile
+
+    sudo swapon --discard=once --options=nofail,discard=once,pri=[PRIORITY] --priority [PRIORITY] --verbose /swapfile
+    sudo swapon --output-all
+    sudo swapoff /swapfile
+
+3. Add /etc/fstab entry to make it persistent. Use the same mounting options as above:
+    /swapfile  none  swap  nofail,discard=once,pri=[PRIORITY]  0  0
+
+4. Enable it manually and check
+    sudo swapon -a
+    sudo swapon --output-all
+
+5. Reboot and check
+    sudo swapon --output-all

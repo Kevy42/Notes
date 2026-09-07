@@ -2,10 +2,15 @@
 
 # OS boot drive
 Base: async,auto,dev,exec,relatime,suid,rw,nouser
+ext4: errors=remount-ro,journal_checksum
 BTRFS: autodefrag,clear_cache,compress=zstd,fatal_errors=panic,space_cache=v2,ssd,subvol=[NAME]
+
+# SWAP
+SWAP: nofail,discard=once,pri=[PRIORITY]
 
 # External drive
 Base: async,auto,nodev,noexec,nofail,relatime,nosuid,rw,nouser,X-mount.mkdir=0770,x-systemd.device-timeout=60s
+ext4: errors=remount-ro,journal_checksum
 BTRFS: autodefrag,clear_cache,compress=zstd,space_cache=v2,ssd
 
 # SMB
