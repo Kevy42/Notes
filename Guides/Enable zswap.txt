@@ -1,7 +1,18 @@
-Add the following options to the kernel command-line parameters:
+1. Add the following options to the kernel command-line parameters (e.g., via grub in /etc/default/grub):
     zswap.enabled=1
     zswap.max_pool_percent=30
     zswap.compressor=lzo
     zswap.shrinker_enabled=1
 
-Note: check the supported compression algorithnms before using via: cat /proc/crypto
+    Example /etc/default/grub entry:
+        GRUB_CMDLINE_LINUX_DEFAULT="quiet zswap.enabled=1 zswap.max_pool_percent=30 zswap.compressor=lzo zswap.shrinker_enabled=1"
+
+    Note: make sure to check the supported compression algorithnms before usage with "cat /proc/crypto"
+
+2. Regenerate GRUB config
+    sudo update-grub
+
+3. Reboot
+
+4. Verify that it's enabled, should return "Y".
+    cat /sys/module/zswap/parameters/enabled
