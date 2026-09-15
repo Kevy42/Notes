@@ -6,19 +6,15 @@ ip -d -c -br n && echo && ip -d -c -br r && echo && ip -d -c -br a && echo && ip
 ip -r/--resolve # Attempt to resolve addresses to DNS names
 ip -n/--netns   # Shows output for specified network namespace
 
-# Add IP to interface
-ip address add \
-    local [ADDRESS/PREFIX] \
-    broadcast [BROADCAST ADDRESS] \  # Optional. Can be set to "+" or "-" in order to derive it from the local [ADDRESS/PREFIX]
-    scope [SCOPE] \                  # Optinal. Affects address selection and routing, can be "global", "link" or "host". "link" is only accessible on this layer 2 segment (e.g., 169.254.0.0/16) and "host" only this machine (i.e., loopback)
-    dev [INTERFACE] \
-    valid_lft [LFT] \                # Optinal. How long the IP is valid for
-    preferred_lft [LFT]              # Optinal. How long before the IP is considered "deprecated" and ceases to be used for new outgoing connections
 
 # Save, view and restore IP state
-ip address save dev [INTERFACE] > ip-backup.txt
+ip address save > ip-backup.txt # Can be limited to one interface
 ip address showdump < ip-backup.txt
 ip address restore < ip-backup.txt
+
+# Save, view and restore route state
+
+
 
 # Add interface. Check ip-link(8) for full syntax
 ip link add \
@@ -28,26 +24,48 @@ ip link add \
     [TYPE SPECIFIC OPTIONS]
 
 # Add interface that's physically linked to another (e.g., of type vlan). Check ip-link(8) for full syntax
-ip link add
-    link
-    [PHYSICAL INTERFACE]   # Physical interface to link to
-    name [INTERFACE NAME]  # Interface to be created
-    type [TYPE]
+ip link add \
+    link \
+    [PHYSICAL INTERFACE] \   # Physical interface to link to
+    name [INTERFACE NAME] \  # Interface to be created
+    type [TYPE] \
     [TYPE SPECIFIC OPTIONS]
+
+
+# Change interface settings
+ip link set \
+    dev [INTERFACE] \
+    [SETTING] { on | off | STRING | NUMBER } \  # Relevant settigns: "arp", "multicast", "allmulticast", "promisc", "name", "mtu", "address", "broadcast", "alias", "master", "nomaster", "addrgenmode". "nomaster" takes no arguments.
+
+# Change interface type specific settings. Check ip-link(8) for full syntax
+ip link set \
+    dev [INTERFACE] \
+    type [TYPE] \
+    [TYPE SPECIFIC OPTIONS]
+
+
+# Add IP to interface
+ip address add \
+    local [ADDRESS/PREFIX] \
+    broadcast [BROADCAST ADDRESS] \  # Optional. Can be set to "+" or "-" in order to derive it from the local [ADDRESS/PREFIX]
+    scope [SCOPE] \                  # Optinal. Affects address selection and routing, can be "global", "link" or "host". "link" is only accessible on this layer 2 segment (e.g., 169.254.0.0/16) and "host" only this machine (i.e., loopback)
+    dev [INTERFACE] \
+    valid_lft [LFT] \                # Optinal. How long the IP is valid for
+    preferred_lft [LFT]              # Optinal. How long before the IP is considered "deprecated" and ceases to be used for new outgoing connections
+
 
 # Bring interface up/down
 ip link set dev [INTERFACE] { up | down }
 
-# Change interface settings
-ip link set
-    dev [INTERFACE]
-    [SETTING] { on | off | STRING | NUMBER }  # Relevant settigns: "arp", "multicast", "allmulticast", "promisc", "name", "mtu", "address", "broadcast", "alias", "master", "nomaster", "addrgenmode". "nomaster" takes no arguments.
-
-# Change interface type specific settings
-ip link set
-    dev [INTERFACE]
-    type [TYPE]
-    [TYPE SPECIFIC OPTIONS]
+ip route \
+    get \
+    [DST IP]
+    from [SRC IP] \           # Optional. Packet source IP, must be available on one of the interfaces unless "iif" is also set
+    iif [INTERFACE] \         # Optional. Check if packet can be routed (forwarded) if it arrived on this interface with a destination IP specified by "from"
+    mark [MARK] \             # Optional
+    ipproto [PROTOCOL NAME] \ # Optional. Filter based on protocol
+    sport [PORT] \            # Optional. Filter based on source port
+    dport [PORT] \            # Optional. Filter based on destination port
 
 ip route \
     add \
@@ -59,6 +77,7 @@ ip route \
     src [IP] # Will limit the route to only being used if the interface has that IP \
     scope link # "global" being the default \
     protocol static # "static" meaing it was added by an admin
+
 
 General info:
     1. View Policy routing table mappings: /usr/share/iproute2/rt_tables
