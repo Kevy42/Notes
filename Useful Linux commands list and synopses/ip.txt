@@ -3,27 +3,24 @@
 # Macro
 ip -d -c -br n && echo && ip -d -c -br r && echo && ip -d -c -br a && echo && ip -d -c -br l
 
-ip -r/--resolve # Attempt to resolve addresses to DNS names
-ip -n/--netns   # Shows output for specified network namespace
-
 
 # Save, view and restore IP state
 ip address save > ip-backup.txt # Can be limited to one interface
 ip address showdump < ip-backup.txt
 ip address restore < ip-backup.txt
 
-# Save, view and restore route state
+# Save, view and restore rule state
 
 
 
-# Add interface. Check ip-link(8) for full syntax
+# Add interface. See ip-link(8) for full syntax
 ip link { add | del } \
     [INTERFACE] \
     name [INTERFACE NAME] \  # Sometimes required
     type [TYPE] \
     [TYPE SPECIFIC OPTIONS]
 
-# Add interface that's physically linked to another (e.g., of type vlan). Check ip-link(8) for full syntax
+# Add interface that's physically linked to another (e.g., of type "vlan"). See ip-link(8) for full syntax
 ip link { add | del } \
     link \
     [PHYSICAL INTERFACE] \   # Physical interface to link to
@@ -37,7 +34,7 @@ ip link { set | change } \
     dev [INTERFACE] \
     [SETTING] { on | off | STRING | NUMBER } \  # Relevant settigns: "arp", "multicast", "allmulticast", "promisc", "name", "mtu", "address", "broadcast", "alias", "master", "nomaster", "addrgenmode". "nomaster" takes no arguments.
 
-# Change interface type specific settings. Check ip-link(8) for full syntax
+# Change interface type specific settings. See ip-link(8) for full syntax
 ip link { set | change } \
     dev [INTERFACE] \
     type [TYPE] \
@@ -53,19 +50,30 @@ ip address { add | del | change | replace } \
     valid_lft [LFT] \                # Optinal. How long the IP is valid for
     preferred_lft [LFT]              # Optinal. How long before the IP is considered "deprecated" and ceases to be used for new outgoing connections
 
-
 # Bring interface up/down
 ip link set dev [INTERFACE] { up | down }
 
 
 ip route get \
     [DST IP]
-    from [SRC IP] \           # Optional. Packet source IP, must be available on one of the interfaces unless "iif" is also set
-    iif [INTERFACE] \         # Optional. Check if packet can be routed (forwarded) if it arrived on this interface with a destination IP specified by "from"
-    mark [MARK] \             # Optional
-    ipproto [PROTOCOL NAME] \ # Optional. Filter based on protocol
-    sport [PORT] \            # Optional. Filter based on source port
-    dport [PORT]              # Optional. Filter based on destination port
+    from [SRC IP] \            # Optional. Packet source IP, must be available on one of the interfaces unless "iif" is also set
+    iif [INTERFACE] \          # Optional. Check if packet can be routed (forwarded) if it arrived on this interface with a destination IP specified by "from"
+    mark [MARK] \              # Optional
+    ipproto [PROTOCOL NAME] \  # Optional. Filter based on protocol
+    sport [PORT] \             # Optional. Filter based on source port
+    dport [PORT]               # Optional. Filter based on destination port
+
+# Filter for routing table entries (as opposed to what route is chosen with "ip route get")
+ip route show \
+    [FILTER] \            # Optional. "root", "match" or "exact". See ip-route(8) for details
+    [IP/PREFIX] \         # Optional
+    table [ID or NAME] \  # Optional
+    protocol [STRING] \   # Optional. Filter based on "proto" type, e.g, "static"
+    scope [STRING] \      # Optional. Filter based on "scope" type, e.g., "link"
+    type [TYPE] \         # Optional. Filter based on "type" type, e.g., "unicast"
+    dev [INTERFACE] \     # Optional
+    via [IP/PREFIX] \     # Optional
+
 
 ip route { add | del | change | append | replace } \
     [TYPE] \              # Optional. Can be "unicast" (default), "local", "broadcast", "multicast", "throw", "unreachable", "prohibit" or "blackhole". "local" and "broadcast" will be added to the "local" rule table \
@@ -77,24 +85,13 @@ ip route { add | del | change | append | replace } \
     via [IP/PREFIX] \     # Optional
     dev [INTERFACE] \     # Optional
     onlink \              # Optional. Consider the route valid even if the next hop is not reachable via the interface
-    mtu [NUMBER] \        # Optional
-    advmss [NUMBER] \     # Optional. Advertised MSS
+    mtu lock [NUMBER] \   # Optional. Either with or without "lock" which inhibits PMTUD from updating the MTU
+    advmss [NUMBER]       # Optional. Advertised MSS
 
 
+General good to know:
+    - View Policy routing table mappings: /usr/share/iproute2/rt_tables
+    - View route "proto" types /usr/share/iproute2/rt_protos
 
-
-ip route \
-    add \
-    to [IP] \
-    metric 0 # Default \
-    table [NAME] # Usually "main" \
-    dev [INTERFACE] \
-    via [IP] \
-    src [IP] # Will limit the route to only being used if the interface has that IP \
-    scope link # "global" being the default \
-    protocol static # "static" meaing it was added by an admin
-
-
-General info:
-    1. View Policy routing table mappings: /usr/share/iproute2/rt_tables
-    2. View route "proto" types /usr/share/iproute2/rt_protos
+    ip -r/--resolve  # Attempt to resolve addresses to DNS names
+    ip -n/--netns    # Shows output for specified network namespace
