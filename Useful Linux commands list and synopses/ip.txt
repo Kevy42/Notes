@@ -5,12 +5,13 @@ ip -c n && echo && ip -d -c r && echo && ip -d -c ru && echo && ip -c -br a && e
 
 
 # Save, view and restore IP state
-ip address save > ip-backup.txt # Can be limited to one interface
-ip address showdump < ip-backup.txt
-ip address restore < ip-backup.txt
+ip address save > ip-address-backup.txt # Can be limited to one interface
+ip address showdump < ip-address-backup.txt
+ip address restore < ip-address-backup.txt # Ignores duplicates
 
 # Save, view and restore rule state
-
+ip rule save > ip-rule-backup.txt
+ip rule restore < ip-rule-backup.txt # Does *not* ignore duplicates
 
 
 # Add interface. See ip-link(8) for full syntax
@@ -54,6 +55,36 @@ ip address { add | del | change | replace } \
 ip link set dev [INTERFACE] { up | down }
 
 
+ip rule show \
+    not \                        # Optional. Invert filter
+    from [IP/PREFIX] \           # Optional
+    to [IP/PREFIX] \             # Optional
+    fwmark [MARK] \              # Optional
+    iif [INTERFACE] \            # Optional. In interface
+    oif [INTERFACE] \            # Optional. Out interface
+    priority [NUMBER] \          # Optional
+    ipproto [PROTOCOL] \         # Optional
+    sport [PORT | PORT RANGE] \  # Optional. Source port
+    dport [PORT | PORT RANGE] \  # Optional. Destination port
+
+ip rule { add | del } \
+    type [TYPE] \                   # Optional. Can be "unicast" (default), "blackhole", "unreachable" or "prohibit"
+    not \                           # Optional. Invert match criteria
+    from [IP/PREFIX] \              # Optional
+    to [IP/PREFIX] \                # Optional
+    fwmark [MARK] \                 # Optional
+    iif [INTERFACE] \               # Optional. In interface
+    oif [INTERFACE] \               # Optional. Out interface
+    priority [NUMBER] \             # Optional but should be set explicitly. Lower numbers take precedence
+    ipproto [PROTOCOL] \            # Optional
+    sport [PORT | PORT RANGE] \     # Optional. Source port
+    dport [PORT | PORT RANGE] \     # Optional. Destination port
+    table [NAME or ID] \
+    protocol [PROTO] \              # Optional. Can be "kernel", "boot" or "static" (other options are irrelevant). "kernel" is added by the kernel, "boot" during boot and "static" manually
+    goto [NUMBER] \                 # Optional. Jump to table with priority [NUMBER] and continue matching from there. Does *not* enter the table, just jumps to it and evaluates from there like normal
+    suppress_prefixlength [NUMBER]  # Optional. Reject *routes* with prefix [NUMBER] or less in the table
+
+
 ip route get \
     [DST IP]
     from [SRC IP] \            # Optional. Packet source IP, must be available on one of the interfaces unless "iif" is also set
@@ -87,36 +118,6 @@ ip route { add | del | change | append | replace } \
     onlink \              # Optional. Consider the route valid even if the next hop is not reachable via the interface
     mtu lock [NUMBER] \   # Optional. Either with or without "lock" which inhibits PMTUD from updating the MTU
     advmss [NUMBER]       # Optional. Advertised MSS
-
-
-ip rule show \
-    not \                        # Optional. Invert filter
-    from [IP/PREFIX] \           # Optional
-    to [IP/PREFIX] \             # Optional
-    fwmark [MARK] \              # Optional
-    iif [INTERFACE] \            # Optional. In interface
-    oif [INTERFACE] \            # Optional. Out interface
-    priority [NUMBER] \          # Optional
-    ipproto [PROTOCOL] \         # Optional
-    sport [PORT | PORT RANGE] \  # Optional. Source port
-    dport [PORT | PORT RANGE] \  # Optional. Destination port
-
-ip rule { add | del } \
-    type [TYPE] \                   # Optional. Can be "unicast" (default), "blackhole", "unreachable", "prohibit"
-    not \                           # Optional. Invert match criteria
-    from [IP/PREFIX] \              # Optional
-    to [IP/PREFIX] \                # Optional
-    fwmark [MARK] \                 # Optional
-    iif [INTERFACE] \               # Optional. In interface
-    oif [INTERFACE] \               # Optional. Out interface
-    priority [NUMBER] \             # Optional but should be set explicitly. Lower numbers take precedence
-    ipproto [PROTOCOL] \            # Optional
-    sport [PORT | PORT RANGE] \     # Optional. Source port
-    dport [PORT | PORT RANGE] \     # Optional. Destination port
-    table [NAME or ID] \
-    protocol [PROTO] \              # Optional. Can be "kernel", "boot" or "static" (other options are irrelevant). "kernel" is added by the kernel, "boot" during boot and "static" manually
-    goto [NUMBER] \                 # Optional. Jump to table with priority [NUMBER] and continue matching from there. Does *not* enter the table, just jumps to it and evaluates from there like normal
-    suppress_prefixlength [NUMBER]  # Optional. Reject *routes* with prefix [NUMBER] or less in the table
 
 
 General good to know:
