@@ -1,7 +1,7 @@
 # Only covers the most commonly used/important options
 
 # Macro
-ip -d -c -br n && echo && ip -d -c -br r && echo && ip -d -c -br a && echo && ip -d -c -br l
+ip -c n && echo && ip -d -c r && echo && ip -d -c ru && echo && ip -c -br a && echo && ip -c -br l
 
 
 # Save, view and restore IP state
@@ -102,6 +102,7 @@ ip rule show \
     dport [PORT | PORT RANGE] \  # Optional. Destination port
 
 ip rule { add | del } \
+    type [TYPE] \                   # Optional. Can be "unicast" (default), "blackhole", "unreachable", "prohibit"
     not \                           # Optional. Invert match criteria
     from [IP/PREFIX] \              # Optional
     to [IP/PREFIX] \                # Optional
@@ -112,13 +113,9 @@ ip rule { add | del } \
     ipproto [PROTOCOL] \            # Optional
     sport [PORT | PORT RANGE] \     # Optional. Source port
     dport [PORT | PORT RANGE] \     # Optional. Destination port
-
-    NEEDED? [type] [TYPE] \                   # Optional. Can be "unicast" (default), "blackhole", "unreachable", "prohibit", "nat"
-
     table [NAME or ID] \
     protocol [PROTO] \              # Optional. Can be "kernel", "boot" or "static" (other options are irrelevant). "kernel" is added by the kernel, "boot" during boot and "static" manually
     goto [NUMBER] \                 # Optional. Jump to table with priority [NUMBER] and continue matching from there. Does *not* enter the table, just jumps to it and evaluates from there like normal
-
     suppress_prefixlength [NUMBER]  # Optional. Reject *routes* with prefix [NUMBER] or less in the table
 
 
