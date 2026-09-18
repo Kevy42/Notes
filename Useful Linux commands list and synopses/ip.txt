@@ -67,7 +67,7 @@ ip route get \
 ip route show \
     [FILTER] \            # Optional. "root", "match" or "exact". See ip-route(8) for details
     [IP/PREFIX] \         # Optional
-    table [ID or NAME] \  # Optional
+    table [NAME or ID] \  # Optional. "all" can be used to match on all tables
     protocol [STRING] \   # Optional. Filter based on "proto" type, e.g, "static"
     scope [STRING] \      # Optional. Filter based on "scope" type, e.g., "link"
     type [TYPE] \         # Optional. Filter based on "type" type, e.g., "unicast"
@@ -78,15 +78,48 @@ ip route show \
 ip route { add | del | change | append | replace } \
     [TYPE] \              # Optional. Can be "unicast" (default), "local", "broadcast", "multicast", "throw", "unreachable", "prohibit" or "blackhole". "local" and "broadcast" will be added to the "local" rule table \
     [IP/PREFIX] \
-    table [ID or NAME] \  # Optional
+    table [NAME or ID] \  # Optional
     proto [STRING] \      # Optional. Can be "kernel", "boot" or "static" (other options are irrelevant). "kernel" is added by the kernel, "boot" during boot and "static" manually
     scope [STRING] \      # Optional. Can be "link", "host" or "global". "host" is only accessible on this machine, "link" only on this layer 2 segment and "global" from anywhere
-    metric [NUMBER] \     # Optional. Defaults to 0, lower is better
+    metric [NUMBER] \     # Optional. Defaults to 0, lower takes precedence
     via [IP/PREFIX] \     # Optional
     dev [INTERFACE] \     # Optional
     onlink \              # Optional. Consider the route valid even if the next hop is not reachable via the interface
     mtu lock [NUMBER] \   # Optional. Either with or without "lock" which inhibits PMTUD from updating the MTU
     advmss [NUMBER]       # Optional. Advertised MSS
+
+
+ip rule show \
+    not \                        # Optional. Invert filter
+    from [IP/PREFIX] \           # Optional
+    to [IP/PREFIX] \             # Optional
+    fwmark [MARK] \              # Optional
+    iif [INTERFACE] \            # Optional. In interface
+    oif [INTERFACE] \            # Optional. Out interface
+    priority [NUMBER] \          # Optional
+    ipproto [PROTOCOL] \         # Optional
+    sport [PORT | PORT RANGE] \  # Optional. Source port
+    dport [PORT | PORT RANGE] \  # Optional. Destination port
+
+ip rule { add | del } \
+    not \                           # Optional. Invert match criteria
+    from [IP/PREFIX] \              # Optional
+    to [IP/PREFIX] \                # Optional
+    fwmark [MARK] \                 # Optional
+    iif [INTERFACE] \               # Optional. In interface
+    oif [INTERFACE] \               # Optional. Out interface
+    priority [NUMBER] \             # Optional but should be set explicitly. Lower numbers take precedence
+    ipproto [PROTOCOL] \            # Optional
+    sport [PORT | PORT RANGE] \     # Optional. Source port
+    dport [PORT | PORT RANGE] \     # Optional. Destination port
+
+    NEEDED? [type] [TYPE] \                   # Optional. Can be "unicast" (default), "blackhole", "unreachable", "prohibit", "nat"
+
+    table [NAME or ID] \
+    protocol [PROTO] \              # Optional. Can be "kernel", "boot" or "static" (other options are irrelevant). "kernel" is added by the kernel, "boot" during boot and "static" manually
+    goto [NUMBER] \                 # Optional. Jump to table with priority [NUMBER] and continue matching from there. Does *not* enter the table, just jumps to it and evaluates from there like normal
+
+    suppress_prefixlength [NUMBER]  # Optional. Reject *routes* with prefix [NUMBER] or less in the table
 
 
 General good to know:

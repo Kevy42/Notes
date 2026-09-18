@@ -1,0 +1,2 @@
+# Reboot the system after 10 minutes if networking has died
+sudo -- setsid --fork -- bash -c -- 'exec </dev/null >/dev/null 2>&1; sleep 600; if ! ping -c 3 -q -w 100 -- 1.1.1.1; then systemctl --quiet reboot; fi'
