@@ -68,8 +68,8 @@ ip rule show \
     dport [PORT | PORT RANGE] \  # Optional. Destination port
 
 ip rule { add | del } \
-    type [TYPE] \                   # Optional. Can be "unicast" (default), "blackhole", "unreachable" or "prohibit"
     not \                           # Optional. Invert match criteria
+    type [TYPE] \                   # Optional. Can be "unicast" (default), "blackhole", "unreachable" or "prohibit"
     from [IP/PREFIX] \              # Optional
     to [IP/PREFIX] \                # Optional
     fwmark [MARK] \                 # Optional
