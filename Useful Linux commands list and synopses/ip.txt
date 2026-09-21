@@ -15,31 +15,31 @@ ip rule restore < ip-rule-backup.txt # Does *not* ignore duplicates
 
 
 # Add interface. See ip-link(8) for full syntax
-ip link { add | del } \
-    [INTERFACE] \
-    name [INTERFACE NAME] \  # Sometimes required
-    type [TYPE] \
-    [TYPE SPECIFIC OPTIONS]
+sudo ip link { add | del } \
+    { INTERFACE NAME } \
+    [ name INTERFACE NAME ] \  # Sometimes required
+    { type TYPE } \
+    [ TYPE SPECIFIC OPTIONS ]
 
 # Add interface that's physically linked to another (e.g., of type "vlan"). See ip-link(8) for full syntax
 ip link { add | del } \
-    link \
-    [PHYSICAL INTERFACE] \   # Physical interface to link to
-    name [INTERFACE NAME] \  # Interface to be created
-    type [TYPE] \
-    [TYPE SPECIFIC OPTIONS]
+    { link } \
+    { PHYSICAL INTERFACE } \   # Physical interface to link to
+    { name INTERFACE NAME } \  # Interface to be created
+    { type TYPE } \
+    [ TYPE SPECIFIC OPTIONS ]
 
 
-# Change interface settings
+# Change interface options (settings)
 ip link { set | change } \
-    dev [INTERFACE] \
-    [SETTING] { on | off | STRING | NUMBER } \  # Relevant settigns: "arp", "multicast", "allmulticast", "promisc", "name", "mtu", "address", "broadcast", "alias", "master", "nomaster", "addrgenmode". "nomaster" takes no arguments.
+    { dev INTERFACE } \
+    { OPTION } { on | off | STRING | NUMBER } \  # Relevant options: "arp", "multicast", "allmulticast", "promisc", "name", "mtu", "address", "broadcast", "alias", "master", "nomaster", "addrgenmode". "nomaster" takes no arguments.
 
-# Change interface type specific settings. See ip-link(8) for full syntax
+# Change interface type specific options. See ip-link(8) for full syntax
 ip link { set | change } \
-    dev [INTERFACE] \
-    type [TYPE] \
-    [TYPE SPECIFIC OPTIONS]
+    { dev INTERFACE } \
+    { type TYPE } \
+    [ TYPE SPECIFIC OPTIONS ]
 
 
 # Add IP to interface
