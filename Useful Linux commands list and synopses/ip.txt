@@ -39,50 +39,50 @@ ip link { set | change } \
 ip link { set | change } \
     { dev INTERFACE } \
     { type TYPE } \
-    [ TYPE SPECIFIC OPTIONS ]
+    { TYPE SPECIFIC OPTIONS }
 
 
 # Add IP to interface
 ip address { add | del | change | replace } \
-    local [ADDRESS/PREFIX] \
-    broadcast [BROADCAST ADDRESS] \  # Optional. Can be set to "+" or "-" in order to derive it from the local [ADDRESS/PREFIX]
-    scope [SCOPE] \                  # Optinal. Affects address selection and routing, can be "global", "link" or "host". "link" is only accessible on this layer 2 segment (e.g., 169.254.0.0/16) and "host" only this machine (i.e., loopback)
-    dev [INTERFACE] \
-    valid_lft [LFT] \                # Optinal. How long the IP is valid for
-    preferred_lft [LFT]              # Optinal. How long before the IP is considered "deprecated" and ceases to be used for new outgoing connections
+    [ local ] { ADDRESS/PREFIX } \
+    [ broadcast BROADCAST ADDRESS ] \  # Can be set to "+" or "-" in order to derive it from the local [ADDRESS/PREFIX]
+    [ scope SCOPE ] \                  # Affects address selection and routing, can be "global", "link" or "host". "link" is only accessible on this layer 2 segment (e.g., 169.254.0.0/16) and "host" only this machine (i.e., loopback)
+    { dev INTERFACE } \
+    [ valid_lft LFT ] \                # How long the IP is valid for
+    [ preferred_lft LFT ]              # How long before the IP is considered "deprecated" and ceases to be used for new outgoing connections
 
 # Bring interface up/down
 ip link set dev [INTERFACE] { up | down }
 
 
 ip rule show \
-    not \                        # Optional. Invert filter
-    from [IP/PREFIX] \           # Optional
-    to [IP/PREFIX] \             # Optional
-    fwmark [MARK] \              # Optional
-    iif [INTERFACE] \            # Optional. In interface
-    oif [INTERFACE] \            # Optional. Out interface
-    priority [NUMBER] \          # Optional
-    ipproto [PROTOCOL] \         # Optional
-    sport [PORT | PORT RANGE] \  # Optional. Source port
-    dport [PORT | PORT RANGE] \  # Optional. Destination port
+    [ not ] \                      # Invert filter
+    [ from IP/PREFIX ] \
+    [ to IP/PREFIX ] \
+    [ fwmark MARK ] \
+    [ iif INTERFACE ] \            # In interface
+    [ oif INTERFACE ] \            # Out interface
+    [ priority NUMBER ] \
+    [ ipproto PROTOCOL ] \
+    [ sport PORT | PORT RANGE ] \  # Source port
+    [ dport PORT | PORT RANGE ] \  # Destination port
 
 ip rule { add | del } \
-    not \                           # Optional. Invert match criteria
-    type [TYPE] \                   # Optional. Can be "unicast" (default), "blackhole", "unreachable" or "prohibit"
-    from [IP/PREFIX] \              # Optional
-    to [IP/PREFIX] \                # Optional
-    fwmark [MARK] \                 # Optional
-    iif [INTERFACE] \               # Optional. In interface
-    oif [INTERFACE] \               # Optional. Out interface
-    priority [NUMBER] \             # Optional but should be set explicitly. Lower numbers take precedence
-    ipproto [PROTOCOL] \            # Optional
-    sport [PORT | PORT RANGE] \     # Optional. Source port
-    dport [PORT | PORT RANGE] \     # Optional. Destination port
-    table [NAME or ID] \
-    protocol [PROTO] \              # Optional. Can be "kernel", "boot" or "static" (other options are irrelevant). "kernel" is added by the kernel, "boot" during boot and "static" manually
-    goto [NUMBER] \                 # Optional. Jump to table with priority [NUMBER] and continue matching from there. Does *not* enter the table, just jumps to it and evaluates from there like normal
-    suppress_prefixlength [NUMBER]  # Optional. Reject *routes* with prefix [NUMBER] or less in the table
+    [ not ] \                         # Invert match criteria
+    [ type TYPE ] \                   # Can be "unicast" (default), "blackhole", "unreachable" or "prohibit"
+    [ from IP/PREFIX ] \
+    [ to IP/PREFIX ] \
+    [ fwmark MARK ] \
+    [ iif INTERFACE ] \               # In interface
+    [ oif INTERFACE ] \               # Out interface
+    { priority NUMBER } \             # Technically optional but should be set. Lower numbers take precedence
+    [ ipproto PROTOCOL ] \            # E.g, "tcp"
+    [ sport PORT | PORT RANGE ] \     # Source port
+    [ dport PORT | PORT RANGE ] \     # Destination port
+    { table NAME | ID } \
+    [ protocol PROTO ] \              # Can be "kernel", "boot" or "static" (other options are irrelevant). "kernel" is added by the kernel, "boot" during boot and "static" manually
+    [ goto NUMBER ] \                 # Jump to table with priority NUMBER and continue matching from there. Does *not* enter the table, just jumps to it and evaluates from there like normal
+    [ suppress_prefixlength NUMBER ]  # Reject *routes* with prefix NUMBER or less in the table
 
 
 ip route get \
