@@ -120,7 +120,21 @@ ip route { add | del | change | append | replace } \
     advmss [NUMBER]       # Optional. Advertised MSS
 
 
-General good to know:
+# Monitor events across ip subcommands. "object" is the normal ip subcommands such as link, address, neigh, etc, and multiple objects can be monitored at the same time.
+# "label" is enabled by default when using "all".
+ip -c -ts monitor [ { all | OBJECT [ OBJECT ] ... } ] [ label ] [ all-nsid ] [ dev DEVICE ]
+
+# Most useful form
+sudo ip -c -ts monitor all all-nsid
+
+
+
+# Todo:
+1. Fix syntax
+2. Add sudo
+3. Setup IP-IP tunnel
+
+Misc good to know:
     - View Policy routing table mappings: /usr/share/iproute2/rt_tables
     - View route "proto" types /usr/share/iproute2/rt_protos
 
