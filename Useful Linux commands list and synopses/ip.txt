@@ -69,7 +69,7 @@ ip rule show \
 
 sudo ip rule { add | del } \
     [ not ] \                         # Invert match criteria
-    [ type TYPE ] \                   # Can be "unicast" (default), "blackhole", "unreachable" or "prohibit"
+    [ type TYPE ] \                   # Can be "unicast" (default), "blackhole", "unreachable" or "prohibit". See ip-rule(8) for details
     [ from IP/PREFIX ] \
     [ to IP/PREFIX ] \
     [ fwmark MARK ] \
@@ -98,7 +98,7 @@ ip route get \
 ip route show \
     [ FILTER ] \            # "root", "match" or "exact". See ip-route(8) for details
     [ IP/PREFIX ] \
-    [ table NAME | ID ] \  # "all" can be used to match on all tables
+    [ table NAME | ID ] \   # "all" can be used to match on all tables
     [ protocol STRING ] \   # Filter based on "proto" type, e.g, "static"
     [ scope STRING ] \      # Filter based on "scope" type, e.g., "link"
     [ type TYPE ] \         # Filter based on "type" type, e.g., "unicast"
@@ -120,6 +120,31 @@ sudo ip route { add | del | change | append | replace } \
     [ advmss NUMBER ]          # Advertised MSS
 
 
+sudo ip neighbour get { IP } { dev INTERFACE }
+
+sudo ip neighbour show \
+    [ proxy ] \        # Proxied ARP entries
+    [ IP/PREFIX ]
+    [ dev INTERFACE ]
+    [ nud ]            # State of the neighbour entry, can be "permanent", "noarp", "reachable", "stale", "none", "incomplete", "delay", "probe" or "failed". See ip-neighbour(8) for details
+
+sudo ip neighbour { add | del | change | replace } \
+    { IP [ lladdr MAC ] [ nud STATE ] | proxy IP }  # "nud" is the state of the neighbour entry, can be "permanent", "noarp", "reachable", "stale", "none", "incomplete", "delay", "probe" or "failed", see ip-neighbour(8) for details. "proxy" is for proxy ARP.
+    [ dev INTERFACE ]
+    [ router ]                                      # Indicate whether neighbour is a router
+    [ use ]                                         # Resolve or refresh the entry
+    [ managed ]                                     # Periodically resolve/refresh this entry
+
+sudo ip neighbour flush
+    [ proxy ] \        # Proxied ARP entries
+    [ IP/PREFIX ]
+    [ dev INTERFACE ]
+    [ nud ]            # State of the neighbour entry, can be "permanent", "noarp", "reachable", "stale", "none", "incomplete", "delay", "probe" or "failed". See ip-neighbour(8) for details
+
+
+# Show cached TCP connection metrics
+ip tcp_metrics show [ IP ]
+
 # Monitor events across ip subcommands. "object" is the normal ip subcommands such as link, address, neigh, etc, and multiple objects can be monitored at the same time.
 # "label" is enabled by default when using "all".
 ip -c -ts monitor [ { all | OBJECT [ OBJECT ] ... } ] [ label ] [ all-nsid ] [ dev DEVICE ]
@@ -130,9 +155,8 @@ sudo ip -c -ts monitor all all-nsid
 
 
 # Todo:
-1. Fix syntax
-2. Add sudo
-3. Setup IP-IP tunnel
+1. Setup IP-IP tunnel
+2. Rearrange stuff so order makes more sense
 
 Misc good to know:
     - View Policy routing table mappings: /usr/share/iproute2/rt_tables
