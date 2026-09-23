@@ -14,4 +14,4 @@ ext4: errors=remount-ro,journal_checksum
 BTRFS: autodefrag,clear_cache,compress=zstd,space_cache=v2,ssd
 
 # SMB
-//[DOMAIN NAME]     [MOUNT POINT]     cifs  async,auto,nodev,noexec,nofail,relatime,nosuid,rw,nouser,x-systemd.automount,X-mount.mkdir=0770,credentials=[CREDENTIAL FILE PATH],uid=1000,gid=1000,iocharset=utf8 0 0 # Uses default WORKGROUP domain
+//[DOMAIN NAME]     [MOUNT POINT]     cifs  async,auto,nodev,noexec,nofail,relatime,nosuid,rw,nouser,x-systemd.automount,X-mount.mkdir=0770,credentials=[CREDENTIAL FILE PATH],uid=1000,gid=1000,iocharset=utf8,mfsymlinks 0 0 # Uses default WORKGROUP domain

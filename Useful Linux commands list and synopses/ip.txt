@@ -22,7 +22,7 @@ sudo ip link { add | del } \
     [ TYPE SPECIFIC OPTIONS ]
 
 # Add interface that's physically linked to another (e.g., of type "vlan"). See ip-link(8) for full syntax
-ip link { add | del } \
+sudo ip link { add | del } \
     { link } \
     { PHYSICAL INTERFACE } \   # Physical interface to link to
     { name INTERFACE NAME } \  # Interface to be created
@@ -31,19 +31,19 @@ ip link { add | del } \
 
 
 # Change interface options (settings)
-ip link { set | change } \
+sudo ip link { set | change } \
     { dev INTERFACE } \
     { OPTION } { on | off | STRING | NUMBER } \  # Relevant options: "arp", "multicast", "allmulticast", "promisc", "name", "mtu", "address", "broadcast", "alias", "master", "nomaster", "addrgenmode". "nomaster" takes no arguments.
 
 # Change interface type specific options. See ip-link(8) for full syntax
-ip link { set | change } \
+sudo ip link { set | change } \
     { dev INTERFACE } \
     { type TYPE } \
     { TYPE SPECIFIC OPTIONS }
 
 
 # Add IP to interface
-ip address { add | del | change | replace } \
+sudo ip address { add | del | change | replace } \
     [ local ] { ADDRESS/PREFIX } \
     [ broadcast BROADCAST ADDRESS ] \  # Can be set to "+" or "-" in order to derive it from the local [ADDRESS/PREFIX]
     [ scope SCOPE ] \                  # Affects address selection and routing, can be "global", "link" or "host". "link" is only accessible on this layer 2 segment (e.g., 169.254.0.0/16) and "host" only this machine (i.e., loopback)
@@ -52,7 +52,7 @@ ip address { add | del | change | replace } \
     [ preferred_lft LFT ]              # How long before the IP is considered "deprecated" and ceases to be used for new outgoing connections
 
 # Bring interface up/down
-ip link set dev [INTERFACE] { up | down }
+sudo ip link set dev [INTERFACE] { up | down }
 
 
 ip rule show \
@@ -67,7 +67,7 @@ ip rule show \
     [ sport PORT | PORT RANGE ] \  # Source port
     [ dport PORT | PORT RANGE ] \  # Destination port
 
-ip rule { add | del } \
+sudo ip rule { add | del } \
     [ not ] \                         # Invert match criteria
     [ type TYPE ] \                   # Can be "unicast" (default), "blackhole", "unreachable" or "prohibit"
     [ from IP/PREFIX ] \
@@ -86,38 +86,38 @@ ip rule { add | del } \
 
 
 ip route get \
-    [DST IP]
-    from [SRC IP] \            # Optional. Packet source IP, must be available on one of the interfaces unless "iif" is also set
-    iif [INTERFACE] \          # Optional. Check if packet can be routed (forwarded) if it arrived on this interface with a destination IP specified by "from"
-    mark [MARK] \              # Optional
-    ipproto [PROTOCOL NAME] \  # Optional. Filter based on protocol
-    sport [PORT] \             # Optional. Filter based on source port
-    dport [PORT]               # Optional. Filter based on destination port
+    { DST IP }
+    [ from SRC IP ] \            # Packet source IP, must be available on one of the interfaces unless "iif" is also set
+    [ iif INTERFACE ] \          # Check if packet can be routed (forwarded) if it arrived on this interface with a destination IP specified by "from"
+    [ mark MARK ] \
+    [ ipproto PROTOCOL NAME ] \  # Filter based on protocol
+    [ sport PORT ] \             # Filter based on source port
+    [ dport PORT ]               # Filter based on destination port
 
 # Filter for routing table entries (as opposed to what route is chosen with "ip route get")
 ip route show \
-    [FILTER] \            # Optional. "root", "match" or "exact". See ip-route(8) for details
-    [IP/PREFIX] \         # Optional
-    table [NAME or ID] \  # Optional. "all" can be used to match on all tables
-    protocol [STRING] \   # Optional. Filter based on "proto" type, e.g, "static"
-    scope [STRING] \      # Optional. Filter based on "scope" type, e.g., "link"
-    type [TYPE] \         # Optional. Filter based on "type" type, e.g., "unicast"
-    dev [INTERFACE] \     # Optional
-    via [IP/PREFIX] \     # Optional
+    [ FILTER ] \            # "root", "match" or "exact". See ip-route(8) for details
+    [ IP/PREFIX ] \
+    [ table NAME | ID ] \  # "all" can be used to match on all tables
+    [ protocol STRING ] \   # Filter based on "proto" type, e.g, "static"
+    [ scope STRING ] \      # Filter based on "scope" type, e.g., "link"
+    [ type TYPE ] \         # Filter based on "type" type, e.g., "unicast"
+    [ dev INTERFACE ] \
+    [ via IP/PREFIX ]
 
 
-ip route { add | del | change | append | replace } \
-    [TYPE] \              # Optional. Can be "unicast" (default), "local", "broadcast", "multicast", "throw", "unreachable", "prohibit" or "blackhole". "local" and "broadcast" will be added to the "local" rule table \
-    [IP/PREFIX] \
-    table [NAME or ID] \  # Optional
-    proto [STRING] \      # Optional. Can be "kernel", "boot" or "static" (other options are irrelevant). "kernel" is added by the kernel, "boot" during boot and "static" manually
-    scope [STRING] \      # Optional. Can be "link", "host" or "global". "host" is only accessible on this machine, "link" only on this layer 2 segment and "global" from anywhere
-    metric [NUMBER] \     # Optional. Defaults to 0, lower takes precedence
-    via [IP/PREFIX] \     # Optional
-    dev [INTERFACE] \     # Optional
-    onlink \              # Optional. Consider the route valid even if the next hop is not reachable via the interface
-    mtu lock [NUMBER] \   # Optional. Either with or without "lock" which inhibits PMTUD from updating the MTU
-    advmss [NUMBER]       # Optional. Advertised MSS
+sudo ip route { add | del | change | append | replace } \
+    [ TYPE ] \                 # Can be "unicast" (default), "local", "broadcast", "multicast", "throw", "unreachable", "prohibit" or "blackhole". "local" and "broadcast" will be added to the "local" rule table \
+    { IP/PREFIX } \
+    [ table NAME | ID ] \
+    [ proto STRING ] \         # Can be "kernel", "boot" or "static" (other options are irrelevant). "kernel" is added by the kernel, "boot" during boot and "static" manually
+    [ scope STRING ] \         # Can be "link", "host" or "global". "host" is only accessible on this machine, "link" only on this layer 2 segment and "global" from anywhere
+    [ metric NUMBER ] \        # Defaults to 0, lower takes precedence
+    [ via IP/PREFIX ] \
+    [ dev INTERFACE ] \
+    [ onlink ] \               # Consider the route valid even if the next hop is not reachable via the interface
+    [ mtu [ lock ] NUMBER ] \  # "lock" inhibits PMTUD from updating the MTU
+    [ advmss NUMBER ]          # Advertised MSS
 
 
 # Monitor events across ip subcommands. "object" is the normal ip subcommands such as link, address, neigh, etc, and multiple objects can be monitored at the same time.
