@@ -155,8 +155,9 @@ sudo ip -c -ts monitor all all-nsid
 
 
 # Todo:
-1. Setup IP-IP tunnel
-2. Rearrange stuff so order makes more sense
+    2. Rearrange stuff so order makes more sense
+
+
 
 Misc good to know:
     - View Policy routing table mappings: /usr/share/iproute2/rt_tables
