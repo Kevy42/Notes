@@ -44,8 +44,8 @@ sudo ip link { set | change } \
 
 # Add IP to interface
 sudo ip address { add | del | change | replace } \
-    [ local ] { ADDRESS/PREFIX } \
-    [ broadcast BROADCAST ADDRESS ] \  # Can be set to "+" or "-" in order to derive it from the local [ADDRESS/PREFIX]
+    [ local ] { IP/PREFIX } \
+    [ broadcast BROADCAST ADDRESS ] \  # Can be set to "+" or "-" in order to derive it from the local { IP/PREFIX }
     [ scope SCOPE ] \                  # Affects address selection and routing, can be "global", "link" or "host". "link" is only accessible on this layer 2 segment (e.g., 169.254.0.0/16) and "host" only this machine (i.e., loopback)
     { dev INTERFACE } \
     [ valid_lft LFT ] \                # How long the IP is valid for

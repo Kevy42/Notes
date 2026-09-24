@@ -1,35 +1,73 @@
-modprobe ipip # NEEDED?
-
-1. Set up IPIP tunnel (see ip-link(8) for full syntax).
-
-    sudo ip link add ipip0 type ipip remote EXISTING-INTERFACE-IP-ON-REMOTE local EXISTING-INTERFACE-IP encap none mode ipip # On server-1
-    sudo ip link add ipip0 type ipip remote EXISTING-INTERFACE-IP-ON-REMOTE local EXISTING-INTERFACE-IP encap none mode ipip # On server-2
-
-    # "EXISTING-INTERFACE-IP" and "EXISTING-INTERFACE-IP-ON-REMOTE" should be substituted for the servers routable IPs (see example below)
-    # respectively; It'll be used as the packet's outer IP.
+Prerequisite context:
 
     # example@server-1:~$ ip -c -br a
     # lo               UNKNOWN        127.0.0.1/8 ::1/128
-    # ens18            UP             10.0.0.10/24 fe80::be24:11ff:fee2:c5d3/64 <------ "EXISTING-INTERFACE-IP"/"EXISTING-INTERFACE-IP-ON-REMOTE" on server-1/server-2
+    # ens18            UP             10.0.0.10/24 fe80::be24:11ff:fee2:c5d3/64
 
-2. Add IPs to the interfaces
-    sudo ip address add local 172.0.0.1/30 broadcast - dev ipip0 # On server-1
-    sudo ip address add local 172.0.0.2/30 broadcast - dev ipip0 # On server-2
+    # example@server-2:~$ ip -c -br a
+    # lo               UNKNOWN        127.0.0.1/8 ::1/128
+    # ens18            UP             10.0.0.20/24 fe80::be24:11ff:fee2:c5d3/64
+
+
+1. Enable IP forwarding
+    # Not strictly needed, but good to have
+    sudo sysctl net.ipv4.ip_forward=1 # On server-1
+    sudo sysctl net.ipv4.ip_forward=1 # On server-2
+
+    # Check to make sure it's enabled
+    sudo sysctl --value net.ipv4.ip_forward # On server-1 .Should return "1"
+    sudo sysctl --value net.ipv4.ip_forward # On server-2 .Should return "1"
+
+
+2. Set up the IPIP tunnel (see ip-link(8) for full syntax).
+    # "remote" and "local" should be set to the servers routable IPs respectively as they'll be used for the packets outer IP —
+    # the underlay IP
+    sudo ip link add ipip0 type ipip remote 10.0.0.20 local 10.0.0.10 encap none mode ipip # On server-1
+    sudo ip link add ipip0 type ipip remote 10.0.0.10 local 10.0.0.20 encap none mode ipip # On server-2
+
+
+3. Add IPs to the interfaces
+    # These will be added to the packets inner IP; the overlay IP
+    sudo ip address add local 172.0.0.1/30 broadcast - scope link dev ipip0 # On server-1
+    sudo ip address add local 172.0.0.2/30 broadcast - scope link dev ipip0 # On server-2
+
+
+4. Bring the interface up
+    sudo ip link set up dev ipip0 # On server-1
+    sudo ip link set up dev ipip0 # On server-2
 
     # Check to make sure the routes have been added
-    ip -c route
-
     # example@server-1:~$ ip -c route
     # default via 10.0.0.1 dev ens18
     # 10.0.0.0/24 dev ens18 proto kernel scope link src 10.0.0.10
     # 172.0.0.0/30 dev ipip0 proto kernel scope link src 172.0.0.1
 
-3. Bring the interface up
-    sudo ip link set up dev ipip0 # On server-1
-    sudo ip link set up dev ipip0 # On server-2
+    # example@server-2:~$ ip -c route
+    # default via 10.0.0.1 dev ens18
+    # 10.0.0.0/24 dev ens18 proto kernel scope link src 10.0.0.20
+    # 172.0.0.0/30 dev ipip0 proto kernel scope link src 172.0.0.2
 
-4. Test
-    ping 172.0.0.2
+
+5. Test
+    # example@server-1:~$ ping 172.0.0.2
+    # PING 172.0.0.2 (172.0.0.2) 56(84) bytes of data.
+    # 64 bytes from 172.0.0.2: icmp_seq=1 ttl=64 time=0.685 ms
+    # 64 bytes from 172.0.0.2: icmp_seq=2 ttl=64 time=0.358 ms
 
     # On server-2. "proto 4" is ipip.
-    sudo tcpdump -e --interface any -n --print --direction inout -q -tttt --packet-buffered -w "/tmp/tcpdump_$(printf '%(%Y-%m-%d_%H-%M-%S)T' -1).pcap" proto 4
+    # example@server-1:~$ sudo tcpdump -e --interface any -n --print --direction inout -q -tttt --packet-buffered -w "/tmp/tcpdump_$(printf '%(%Y-%m-%d_%H-%M-%S)T' -1).pcap" proto 4
+    # tcpdump: listening on any, link-type LINUX_SLL2 (Linux cooked v2), snapshot length 262144 bytes
+    # 2026-09-24 14:23:30.308272 ens18 In  ifindex 2 bc:24:11:e2:c5:d3 10.0.0.10 > 10.0.0.20: 172.0.0.1 > 172.0.0.2: ICMP echo request, id 11, seq 6, length 64
+    # 2026-09-24 14:23:30.308304 ens18 Out ifindex 2 bc:24:11:b0:c4:bc 10.0.0.20 > 10.0.0.10: 172.0.0.2 > 172.0.0.1: ICMP echo reply, id 11, seq 6, length 64
+
+
+6. Cleanup
+    # Disable IP forwarding if was disabled prior to enabling in step 1
+    sudo sysctl net.ipv4.ip_forward=0 # On server-1
+    sudo sysctl net.ipv4.ip_forward=0 # On server-2
+
+    sudo ip link del ipip0 type ipip remote 10.0.0.20 local 10.0.0.10 encap none mode ipip # On server-1
+    sudo ip link del ipip0 type ipip remote 10.0.0.10 local 10.0.0.20 encap none mode ipip # On server-2
+
+    sudo modprobe --remove ipip # On server-1
+    sudo modprobe --remove ipip # On server-2
