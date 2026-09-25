@@ -28,9 +28,8 @@ Prerequisite context:
 
 3. Add IPs to the interfaces
     # These will be added to the packets inner IP; the overlay IP
-    sudo ip address add local 172.0.0.1/30 broadcast - scope link dev ipip0 # On server-1
-    sudo ip address add local 172.0.0.2/30 broadcast - scope link dev ipip0 # On server-2
-
+    sudo ip address add local 172.20.0.1 peer 172.20.0.2/32 scope link dev ipip0 # On server-1
+    sudo ip address add local 172.20.0.2 peer 172.20.0.1/32 scope link dev ipip0 # On server-2
 
 4. Bring the interface up
     sudo ip link set up dev ipip0 # On server-1
@@ -40,25 +39,25 @@ Prerequisite context:
     # example@server-1:~$ ip -c route
     # default via 10.0.0.1 dev ens18
     # 10.0.0.0/24 dev ens18 proto kernel scope link src 10.0.0.10
-    # 172.0.0.0/30 dev ipip0 proto kernel scope link src 172.0.0.1
+    # 172.20.0.2 dev ipip0 proto kernel scope link src 172.20.0.1
 
     # example@server-2:~$ ip -c route
     # default via 10.0.0.1 dev ens18
     # 10.0.0.0/24 dev ens18 proto kernel scope link src 10.0.0.20
-    # 172.0.0.0/30 dev ipip0 proto kernel scope link src 172.0.0.2
+    # 172.20.0.1 dev ipip0 proto kernel scope link src 172.20.0.2
 
 
 5. Test
-    # example@server-1:~$ ping 172.0.0.2
-    # PING 172.0.0.2 (172.0.0.2) 56(84) bytes of data.
-    # 64 bytes from 172.0.0.2: icmp_seq=1 ttl=64 time=0.685 ms
-    # 64 bytes from 172.0.0.2: icmp_seq=2 ttl=64 time=0.358 ms
+    # example@server-1:~$ ping 172.20.0.2
+    # PING 172.20.0.2 (172.20.0.2) 56(84) bytes of data.
+    # 64 bytes from 172.20.0.2: icmp_seq=1 ttl=64 time=0.685 ms
+    # 64 bytes from 172.20.0.2: icmp_seq=2 ttl=64 time=0.358 ms
 
     # On server-2. "proto 4" is ipip.
     # example@server-1:~$ sudo tcpdump -e --interface any -n --print --direction inout -q -tttt --packet-buffered -w "/tmp/tcpdump_$(printf '%(%Y-%m-%d_%H-%M-%S)T' -1).pcap" proto 4
     # tcpdump: listening on any, link-type LINUX_SLL2 (Linux cooked v2), snapshot length 262144 bytes
-    # 2026-09-24 14:23:30.308272 ens18 In  ifindex 2 bc:24:11:e2:c5:d3 10.0.0.10 > 10.0.0.20: 172.0.0.1 > 172.0.0.2: ICMP echo request, id 11, seq 6, length 64
-    # 2026-09-24 14:23:30.308304 ens18 Out ifindex 2 bc:24:11:b0:c4:bc 10.0.0.20 > 10.0.0.10: 172.0.0.2 > 172.0.0.1: ICMP echo reply, id 11, seq 6, length 64
+    # 2026-09-24 14:23:30.308272 ens18 In  ifindex 2 bc:24:11:e2:c5:d3 10.0.0.10 > 10.0.0.20: 172.20.0.1 > 172.20.0.2: ICMP echo request, id 11, seq 6, length 64
+    # 2026-09-24 14:23:30.308304 ens18 Out ifindex 2 bc:24:11:b0:c4:bc 10.0.0.20 > 10.0.0.10: 172.20.0.2 > 172.20.0.1: ICMP echo reply, id 11, seq 6, length 64
 
 
 6. Cleanup

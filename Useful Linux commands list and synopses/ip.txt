@@ -44,12 +44,12 @@ sudo ip link { set | change } \
 
 # Add IP to interface
 sudo ip address { add | del | change | replace } \
-    [ local ] { IP/PREFIX } \
-    [ broadcast BROADCAST ADDRESS ] \  # Can be set to "+" or "-" in order to derive it from the local { IP/PREFIX }
-    [ scope SCOPE ] \                  # Affects address selection and routing, can be "global", "link" or "host". "link" is only accessible on this layer 2 segment (e.g., 169.254.0.0/16) and "host" only this machine (i.e., loopback)
+    [ local ] { IP/PREFIX | IP peer IP/PREFIX } \  # The "IP peer IP/PREFIX" option should only be used for on-link point-to-point interfaces. That is, interfaces where exactly two addresses are needed and nothing more (e.g., an ipip tunnel)
+    [ broadcast BROADCAST ADDRESS ] \              # Can be set to "+" or "-" in order to derive it from the local { IP/PREFIX }. Should not be used in conjunction with the "IP peer IP/PREFIX" option
+    [ scope SCOPE ] \                              # Affects address selection and routing, can be "global", "link" or "host". "link" is only accessible on this layer 2 segment (e.g., 169.254.0.0/16) and "host" only this machine (i.e., loopback)
     { dev INTERFACE } \
-    [ valid_lft LFT ] \                # How long the IP is valid for
-    [ preferred_lft LFT ]              # How long before the IP is considered "deprecated" and ceases to be used for new outgoing connections
+    [ valid_lft LFT ] \                            # How long the IP is valid for
+    [ preferred_lft LFT ]                          # How long before the IP is considered "deprecated" and ceases to be used for new outgoing connections
 
 # Bring interface up/down
 sudo ip link set dev [INTERFACE] { up | down }
