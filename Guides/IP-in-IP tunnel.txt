@@ -19,48 +19,55 @@ Prerequisite context:
     sudo sysctl --value net.ipv4.ip_forward # On server-2 .Should return "1"
 
 
-2. Set up the IP-in-IP tunnel (see ip-link(8) for full syntax).
+2. Configure Foo-over-UDP (FOU)/Generic UDP Encapsulation (GUE) receive endpoints (skip if using native IP-in-IP)
+    sudo modprobe fou # On server-1
+    sudo modprobe fou # On server-2
 
+    # IP-in-IP with Foo-over-UDP (FOU) encapsulation
+        # "ipproto PROTOCOL-NUMBER" tells the kernel what protocol the received packets should be treated has having given that
+        # FOU encapsulation doesn't add any protocol identification header (unlike GUE)
+        sudo ip fou add port 5000 ipproto 4 local 10.0.0.10 dev ens18 # On server-1
+        sudo ip fou add port 5000 ipproto 4 local 10.0.0.20 dev ens18 # On server-2
+
+    # IP-in-IP with Generic UDP Encapsulation (GUE)
+        sudo ip fou add port 5000 gue local 10.0.0.10 dev ens18 # On server-1
+        sudo ip fou add port 5000 gue local 10.0.0.20 dev ens18 # On server-2
+
+    # Check to make sure the FOU/GUE entry have been added
+    # example@server-1:~$ ip fou show
+    # port 5000 gue local 10.0.0.10 dev ens18
+
+    # example@server-2:~$ ip fou show
+    # port 5000 gue local 10.0.0.20 dev ens18
+
+
+3. Set up the IP-in-IP tunnels (see ip-link(8) for full syntax).
     # Native IP-in-IP
-
         # "remote" and "local" should be set to the servers routable IPs respectively as they'll be used for the packets outer IP —
         # the underlay IP
         sudo ip link add ipip0 type ipip remote 10.0.0.20 local 10.0.0.10 encap none mode ipip # On server-1
         sudo ip link add ipip0 type ipip remote 10.0.0.10 local 10.0.0.20 encap none mode ipip # On server-2
 
-
     # IP-in-IP with Foo-over-UDP (FOU) encapsulation.
-        # Using destination port 5000 on both ends
-
-        # On server-1
-            sudo ip link add ipip0 type ipip remote 10.0.0.20 local 10.0.0.10 encap fou encap-dport 5000 mode ipip
-            sudo modprobe fou
-
-            # "ipproto PROTOCOL-NUMBER" tells the kernel what protocol the received packets should be treated has having given that
-            FOU encapsulation doesn't add any protocol identification header (unlike GUE)
-            sudo ip fou add port 5000 ipproto 4 local 10.0.0.10 dev ens18
-
-        # On server-2
-            sudo ip link add ipip0 type ipip remote 10.0.0.10 local 10.0.0.20 encap fou encap-dport 5000 mode ipip
-            sudo modprobe fou
-            sudo ip fou add port 5000 ipproto 4 local 10.0.0.20 dev ens18
-
+        sudo ip link add ipip0 type ipip remote 10.0.0.20 local 10.0.0.10 encap fou encap-dport 5000 mode ipip # On server-1
+        sudo ip link add ipip0 type ipip remote 10.0.0.10 local 10.0.0.20 encap fou encap-dport 5000 mode ipip # On server-2
 
     # IP-in-IP with Generic UDP Encapsulation (GUE)
-        # Using destination port 5000 on both ends
-
-        # On server-1
         sudo ip link add ipip0 type ipip remote 10.0.0.20 local 10.0.0.10 encap gue encap-dport 5000 mode ipip # On server-2
-        sudo modprobe fou
-        sudo ip fou add port 5000 gue local 10.0.0.10 dev ens18
-
-        # On server-2
         sudo ip link add ipip0 type ipip remote 10.0.0.10 local 10.0.0.20 encap gue encap-dport 5000 mode ipip # On server-2
-        sudo modprobe fou
-        sudo ip fou add port 5000 gue local 10.0.0.20 dev ens18
 
-3. Configure Foo-over-UDP/Generic UDP Encapsulation (GUE) receive endpoint
+    # Check to make sure the tunnel interfaces have been added
+    # example@server-1:~$ ip -c address show dev ipip0
+    # 4: ipip0@NONE: <POINTOPOINT,NOARP> mtu 1468 qdisc noop state DOWN group default qlen 1000
+    #     link/ipip 10.0.0.10 peer 10.0.0.20
+    #     inet 172.16.0.1 peer 172.16.0.2/32 scope link ipip0
+    #        valid_lft forever preferred_lft forever
 
+    # example@server-1:~$ ip -c address show dev ipip0
+    # 4: ipip0@NONE: <POINTOPOINT,NOARP> mtu 1468 qdisc noop state DOWN group default qlen 1000
+    #     link/ipip 10.0.0.10 peer 10.0.0.20
+    #     inet 172.16.0.1 peer 172.16.0.2/32 scope link ipip0
+    #        valid_lft forever preferred_lft forever
 
 
 3. Add IPs to the interfaces
@@ -69,7 +76,7 @@ Prerequisite context:
     sudo ip address add local 172.16.0.2 peer 172.16.0.1/32 scope link dev ipip0 # On server-2
 
 
-4. Bring the interface up
+4. Bring up the interfaces
     sudo ip link set up dev ipip0 # On server-1
     sudo ip link set up dev ipip0 # On server-2
 
@@ -99,13 +106,16 @@ Prerequisite context:
 
 
 6. Cleanup once done
-    # Disable IP forwarding if was disabled prior to enabling in step 1
+    # Disable IP forwarding if it already was disabled prior to enabling in step 1
     sudo sysctl net.ipv4.ip_forward=0 # On server-1
     sudo sysctl net.ipv4.ip_forward=0 # On server-2
 
     sudo ip link del dev ipip0 # On server-1
     sudo ip link del dev ipip0 # On server-2
 
-    # Unload the ipip module if wasn't loaded prior to setting up the ipip tunnel
-    sudo modprobe --remove ipip # On server-1
-    sudo modprobe --remove ipip # On server-2
+    # Remove the FOU/GUE receive endpoints
+    sudo ip fou del port 5000 local 10.0.0.10 dev ens18 # On server-1
+    sudo ip fou del port 5000 local 10.0.0.20 dev ens18 # On server-2
+
+    sudo modprobe --remove ipip fou # On server-1
+    sudo modprobe --remove ipip fou # On server-2
