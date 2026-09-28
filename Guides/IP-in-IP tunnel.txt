@@ -29,20 +29,25 @@ Prerequisite context:
         sudo ip link add ipip0 type ipip remote 10.0.0.10 local 10.0.0.20 encap none mode ipip # On server-2
 
 
-    # IP-in-IP with Foo-over-UDP (FOU) encapsulation
+    # IP-in-IP with Foo-over-UDP (FOU) encapsulation.
+        # Using destination port 5000 on both ends
 
         # On server-1
-        sudo ip link add ipip0 type ipip remote 10.0.0.20 local 10.0.0.10 encap fou encap-dport 5000 mode ipip # On server-2
-        sudo modprobe fou
-        sudo ip fou add port 5000 ipproto 4 local 10.0.0.10 dev ens18
+            sudo ip link add ipip0 type ipip remote 10.0.0.20 local 10.0.0.10 encap fou encap-dport 5000 mode ipip
+            sudo modprobe fou
+
+            # "ipproto PROTOCOL-NUMBER" tells the kernel what protocol the received packets should be treated has having given that
+            FOU encapsulation doesn't add any protocol identification header (unlike GUE)
+            sudo ip fou add port 5000 ipproto 4 local 10.0.0.10 dev ens18
 
         # On server-2
-        sudo ip link add ipip0 type ipip remote 10.0.0.10 local 10.0.0.20 encap fou encap-dport 5000 mode ipip # On server-2
-        sudo modprobe fou
-        sudo ip fou add port 5000 ipproto 4 local 10.0.0.20 dev ens18
+            sudo ip link add ipip0 type ipip remote 10.0.0.10 local 10.0.0.20 encap fou encap-dport 5000 mode ipip
+            sudo modprobe fou
+            sudo ip fou add port 5000 ipproto 4 local 10.0.0.20 dev ens18
 
 
-    # IP-in-IP with Generic UDP (GUE) Encapsulation
+    # IP-in-IP with Generic UDP Encapsulation (GUE)
+        # Using destination port 5000 on both ends
 
         # On server-1
         sudo ip link add ipip0 type ipip remote 10.0.0.20 local 10.0.0.10 encap gue encap-dport 5000 mode ipip # On server-2
@@ -53,6 +58,8 @@ Prerequisite context:
         sudo ip link add ipip0 type ipip remote 10.0.0.10 local 10.0.0.20 encap gue encap-dport 5000 mode ipip # On server-2
         sudo modprobe fou
         sudo ip fou add port 5000 gue local 10.0.0.20 dev ens18
+
+3. Configure Foo-over-UDP/Generic UDP Encapsulation (GUE) receive endpoint
 
 
 
