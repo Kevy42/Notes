@@ -42,32 +42,46 @@ Prerequisite context:
 
 
 3. Set up the IP-in-IP tunnels (see ip-link(8) for full syntax).
+
+    # Note:
+    # ip-link(8) is currently incomplete and doesn't document the fact that you can use "dev DEVICE" when setting up ipip tunnels. Using that option will bind the tunnel interface to
+    # a real interface which will ensure that the traffic only exits via it, useful for preventing the traffic from using the wrong interface even if that interface obtains the configured "local" IP.
+    # ip-tunnel(8) correctly documents this feature.
+
     # Native IP-in-IP
-        # "remote" and "local" should be set to the servers routable IPs respectively as they'll be used for the packets outer IP —
-        # the underlay IP
-        sudo ip link add ipip0 type ipip remote 10.0.0.20 local 10.0.0.10 encap none mode ipip # On server-1
-        sudo ip link add ipip0 type ipip remote 10.0.0.10 local 10.0.0.20 encap none mode ipip # On server-2
+        sudo ip link add ipip0 type ipip remote 10.0.0.20 local 10.0.0.10 encap none mode ipip dev ens18 # On server-1
+        sudo ip link add ipip0 type ipip remote 10.0.0.10 local 10.0.0.20 encap none mode ipip dev ens18 # On server-2
 
     # IP-in-IP with Foo-over-UDP (FOU) encapsulation.
-        sudo ip link add ipip0 type ipip remote 10.0.0.20 local 10.0.0.10 encap fou encap-dport 5000 mode ipip # On server-1
-        sudo ip link add ipip0 type ipip remote 10.0.0.10 local 10.0.0.20 encap fou encap-dport 5000 mode ipip # On server-2
+        sudo ip link add ipip0 type ipip remote 10.0.0.20 local 10.0.0.10 encap fou encap-dport 5000 mode ipip dev ens18 # On server-1
+        sudo ip link add ipip0 type ipip remote 10.0.0.10 local 10.0.0.20 encap fou encap-dport 5000 mode ipip dev ens18 # On server-2
 
     # IP-in-IP with Generic UDP Encapsulation (GUE)
-        sudo ip link add ipip0 type ipip remote 10.0.0.20 local 10.0.0.10 encap gue encap-dport 5000 mode ipip # On server-2
-        sudo ip link add ipip0 type ipip remote 10.0.0.10 local 10.0.0.20 encap gue encap-dport 5000 mode ipip # On server-2
+        sudo ip link add ipip0 type ipip remote 10.0.0.20 local 10.0.0.10 encap gue encap-dport 5000 mode ipip dev ens18 # On server-2
+        sudo ip link add ipip0 type ipip remote 10.0.0.10 local 10.0.0.20 encap gue encap-dport 5000 mode ipip dev ens18 # On server-2
 
     # Check to make sure the tunnel interfaces have been added
+
     # example@server-1:~$ ip -c address show dev ipip0
     # 4: ipip0@NONE: <POINTOPOINT,NOARP> mtu 1468 qdisc noop state DOWN group default qlen 1000
     #     link/ipip 10.0.0.10 peer 10.0.0.20
     #     inet 172.16.0.1 peer 172.16.0.2/32 scope link ipip0
     #        valid_lft forever preferred_lft forever
 
+    # example@server-1:~$ ip tunnel show
+    # tunl0: any/ip remote any local any ttl inherit nopmtudisc
+    # ipip0: ip/ip remote 10.0.0.20 local 10.0.0.10 dev ens18 ttl inherit
+
+
     # example@server-2:~$ ip -c address show dev ipip0
     # 4: ipip0@NONE: <POINTOPOINT,NOARP> mtu 1468 qdisc noop state DOWN group default qlen 1000
     #     link/ipip 10.0.0.20 peer 10.0.0.10
     #     inet 172.16.0.2 peer 172.16.0.1/32 scope link ipip0
     #        valid_lft forever preferred_lft forever
+
+    # example@server-2:~$ ip tunnel show
+    # tunl0: any/ip remote any local any ttl inherit nopmtudisc
+    # ipip0: ip/ip remote 10.0.0.10 local 10.0.0.20 dev ens18 ttl inherit
 
 
 4. Add IPs to the interfaces
