@@ -19,7 +19,7 @@ Prerequisite context:
     sudo sysctl --value net.ipv4.ip_forward # On server-2 .Should return "1"
 
 
-2. Configure Foo-over-UDP (FOU)/Generic UDP Encapsulation (GUE) receive endpoints (skip if using native IP-in-IP)
+2. Configure Foo-over-UDP (FOU)/Generic UDP Encapsulation (GUE) receive ports (skip if using native IP-in-IP)
     sudo modprobe fou # On server-1
     sudo modprobe fou # On server-2
 
@@ -128,7 +128,7 @@ Prerequisite context:
     sudo ip link del dev ipip0 # On server-1
     sudo ip link del dev ipip0 # On server-2
 
-    # Remove the FOU/GUE receive endpoints
+    # Remove the FOU/GUE receive ports
     sudo ip fou del port 5000 local 10.0.0.10 dev ens18 # On server-1
     sudo ip fou del port 5000 local 10.0.0.20 dev ens18 # On server-2
 
