@@ -63,10 +63,10 @@ Prerequisite context:
     #     inet 172.16.0.1 peer 172.16.0.2/32 scope link ipip0
     #        valid_lft forever preferred_lft forever
 
-    # example@server-1:~$ ip -c address show dev ipip0
+    # example@server-2:~$ ip -c address show dev ipip0
     # 4: ipip0@NONE: <POINTOPOINT,NOARP> mtu 1468 qdisc noop state DOWN group default qlen 1000
-    #     link/ipip 10.0.0.10 peer 10.0.0.20
-    #     inet 172.16.0.1 peer 172.16.0.2/32 scope link ipip0
+    #     link/ipip 10.0.0.20 peer 10.0.0.10
+    #     inet 172.16.0.2 peer 172.16.0.1/32 scope link ipip0
     #        valid_lft forever preferred_lft forever
 
 
@@ -74,6 +74,19 @@ Prerequisite context:
     # These will be added to the packets inner IP; the overlay IP
     sudo ip address add local 172.16.0.1 peer 172.16.0.2/32 scope link dev ipip0 # On server-1
     sudo ip address add local 172.16.0.2 peer 172.16.0.1/32 scope link dev ipip0 # On server-2
+
+    # Check to make sure the IPs have been added
+    # example@server-1:~$ ip -c address show dev ipip0
+    4: ipip0@NONE: <POINTOPOINT,NOARP> mtu 1468 qdisc noop state DOWN group default qlen 1000
+        link/ipip 10.0.0.10 peer 10.0.0.20
+        inet 172.16.0.1 peer 172.16.0.2/32 scope link ipip0
+           valid_lft forever preferred_lft forever
+
+    # example@server-2:~$ ip -c address show dev ipip0
+    4: ipip0@NONE: <POINTOPOINT,NOARP> mtu 1468 qdisc noop state DOWN group default qlen 1000
+        link/ipip 10.0.0.20 peer 10.0.0.10
+        inet 172.16.0.2 peer 172.16.0.1/32 scope link ipip0
+           valid_lft forever preferred_lft forever
 
 
 4. Bring up the interfaces
@@ -98,7 +111,7 @@ Prerequisite context:
     # 64 bytes from 172.16.0.2: icmp_seq=1 ttl=64 time=0.685 ms
     # 64 bytes from 172.16.0.2: icmp_seq=2 ttl=64 time=0.358 ms
 
-    # On server-2. "proto 4" is ipip.
+    # "proto 4" is ipip.
     # example@server-2:~$ sudo tcpdump -e --interface any -n --print --direction inout -q -tttt --packet-buffered -w "/tmp/tcpdump_$(printf '%(%Y-%m-%d_%H-%M-%S)T' -1).pcap" proto 4
     # tcpdump: listening on any, link-type LINUX_SLL2 (Linux cooked v2), snapshot length 262144 bytes
     # 2026-09-24 14:23:30.308272 ens18 In  ifindex 2 bc:24:11:e2:c5:d3 10.0.0.10 > 10.0.0.20: 172.16.0.1 > 172.16.0.2: ICMP echo request, id 11, seq 6, length 64
@@ -106,6 +119,8 @@ Prerequisite context:
 
 
 6. Cleanup once done
+    # Either reboot both servers or follow the below instructions
+
     # Disable IP forwarding if it already was disabled prior to enabling in step 1
     sudo sysctl net.ipv4.ip_forward=0 # On server-1
     sudo sysctl net.ipv4.ip_forward=0 # On server-2
