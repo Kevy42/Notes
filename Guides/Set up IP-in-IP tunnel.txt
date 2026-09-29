@@ -72,7 +72,6 @@ Prerequisite context:
     # tunl0: any/ip remote any local any ttl inherit nopmtudisc
     # ipip0: ip/ip remote 10.0.0.20 local 10.0.0.10 dev ens18 ttl inherit
 
-
     # example@server-2:~$ ip -c address show dev ipip0
     # 4: ipip0@NONE: <POINTOPOINT,NOARP> mtu 1468 qdisc noop state DOWN group default qlen 1000
     #     link/ipip 10.0.0.20 peer 10.0.0.10
