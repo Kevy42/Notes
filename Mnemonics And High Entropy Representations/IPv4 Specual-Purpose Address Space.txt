@@ -1,3 +1,5 @@
+Only covers the most commonly used/important RFCs.
+
 Source: https://www.iana.org/assignments/iana-ipv4-special-registry
 
 PREFIX                                                RANGE                                                                                         RFC                        USAGE

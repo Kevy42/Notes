@@ -1,0 +1,15 @@
+# Only covers the most commonly used/important options
+
+sudo fuser
+    [ --kill ] \            # Kill the process(es) using the file/directory
+    [ --interactive ]       # Confirm before killing
+    [ --ismountpoint ]      # Makes sure only mount points (i.e., the root of the mount) are accepted. Safeguards against typoing the mounted path and accidentally killing the system
+    [ --mount ]             # Lists all processes accessing files on the filesystem
+    [ --namespace ]
+    { FILE | DIRECTORY }
+
+# Check
+sudo fuser -n tcp ,0.0.0.0/0,22
+
+# Most useful form
+sudo fuser --kill --interactive --ismountpoint --user --mount /mnt/nvme-ssd/
