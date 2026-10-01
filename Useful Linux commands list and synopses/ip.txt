@@ -149,7 +149,7 @@ ip tcp_metrics show [ IP ]
 # "label" is enabled by default when using "all".
 ip -c -ts monitor [ { all | OBJECT [ OBJECT ] ... } ] [ label ] [ all-nsid ] [ dev DEVICE ]
 
-# Most useful form
+# Most useful form of the command
 sudo ip -c -ts monitor all all-nsid
 
 

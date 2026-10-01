@@ -1,15 +1,30 @@
 # Only covers the most commonly used/important options
 
+# Display processes using the specified files, file systems or TCP/UDP sockets
 sudo fuser
-    [ --kill ] \            # Kill the process(es) using the file/directory
-    [ --interactive ]       # Confirm before killing
-    [ --ismountpoint ]      # Makes sure only mount points (i.e., the root of the mount) are accepted. Safeguards against typoing the mounted path and accidentally killing the system
-    [ --mount ]             # Lists all processes accessing files on the filesystem
-    [ --namespace ]
+    [ --kill ] \                                                                      # Kill the process(es) that are using the file/directory
+    [ --interactive ]                                                                 # Confirm before killing
+    [ --mount ]                                                                       # Lists all processes that are using files on the file system
+    [ --ismountpoint ]                                                                # Makes sure only mount points (i.e., the root of the mount) are accepted. Safeguards against typoing the mounted path and accidentally killing the system
+
+    # List all processes using TCP/UDP sockets.
+    # The commas must be present when not using [ LOCAL PORT ] while still using one or both of the other options (e.g., "--namespace tcp ,,[ REMOTE PORT ]").
+    # The "{ PORT }/{ TCP | UDP }" shortcut notation (e.g., "fuser ssh/tcp") can also be used. Numeric and symbolic values are supported for all three of the latter options.
+    [ --namespace { tcp | udp } { [ LOCAL PORT ][ ,REMOTE HOST ][ ,REMOTE PORT ] } ]
+
+    [ -SIGNAL-NAME | -SIGNAL-NUMBER ]                                                 # Signal used when killing processes. Defaults to SIGKILL
+    [ --user ]                                                                        # Display the user next to the PID
+    [ --verbose ]
     { FILE | DIRECTORY }
 
-# Check
-sudo fuser -n tcp ,0.0.0.0/0,22
 
-# Most useful form
-sudo fuser --kill --interactive --ismountpoint --user --mount /mnt/nvme-ssd/
+# List all processes using the specified file system. Most useful form of the commands
+sudo fuser --kill --interactive --mount --ismountpoint --user { ROOT PATH OF THE MOUNT }
+
+# List all processes using the specified file/directory
+sudo fuser --kill --interactive --user { PATH | DIRECTORY }
+
+# List all processes using the TCP socket at port 22
+sudo fuser -n tcp --user ,0.0.0.0/0,22
+sudo fuser -n tcp --user --verbose ,0.0.0.0/0,22
+sudo fuser ssh/tcp --user --verbose # Note: may miss some processes
