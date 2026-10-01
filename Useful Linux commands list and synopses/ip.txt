@@ -153,12 +153,6 @@ ip -c -ts monitor [ { all | OBJECT [ OBJECT ] ... } ] [ label ] [ all-nsid ] [ d
 sudo ip -c -ts monitor all all-nsid
 
 
-
-# Todo:
-    2. Rearrange stuff so order makes more sense
-
-
-
 Misc good to know:
     - View Policy routing table mappings: /usr/share/iproute2/rt_tables
     - View route "proto" types /usr/share/iproute2/rt_protos
