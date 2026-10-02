@@ -15,139 +15,139 @@ ip rule restore < ip-rule-backup.txt # Does *not* ignore duplicates
 
 
 # Add interface. See ip-link(8) for full syntax
-sudo ip link { add | del } \
+sudo ip link {add|del} \
     INTERFACE-NAME \
-    [ name INTERFACE NAME ] \  # Sometimes required
+    [name INTERFACE-NAME] \     # Sometimes required
     type TYPE \
-    [ TYPE-SPECIFIC-OPTIONS ]
+    [TYPE-SPECIFIC-OPTIONS...]
 
 # Add interface that's physically linked to another (e.g., of type "vlan"). See ip-link(8) for full syntax
-sudo ip link { add | del } \
+sudo ip link {add|del} \
     link \
-    PHYSICAL-INTERFACE \   # Physical interface to link to
-    name INTERFACE-NAME \  # Interface to be created
+    PHYSICAL-INTERFACE \        # Physical interface to link to
+    name INTERFACE-NAME \       # Interface to be created
     type TYPE \
-    [ TYPE-SPECIFIC-OPTIONS ]
+    [TYPE-SPECIFIC-OPTIONS...]
 
 
 # Change interface options (settings)
-sudo ip link { set | change } \
+sudo ip link {set|change} \
     dev INTERFACE \
-    OPTION { on | off | STRING | NUMBER } \  # Relevant options: "arp", "multicast", "allmulticast", "promisc", "name", "mtu", "address", "broadcast", "alias", "master", "nomaster", "addrgenmode". "nomaster" takes no arguments.
+    OPTION {on|off|STRING|NUMBER} \  # Relevant options: "arp", "multicast", "allmulticast", "promisc", "name", "mtu", "address", "broadcast", "alias", "master", "nomaster", "addrgenmode". "nomaster" takes no arguments.
 
 # Change interface type specific options. See ip-link(8) for full syntax
-sudo ip link { set | change } \
+sudo ip link {set|change} \
     dev INTERFACE \
     type TYPE \
-    TYPE-SPECIFIC-OPTIONS
+    TYPE-SPECIFIC-OPTIONS...
 
 
 # Add IP to interface
-sudo ip address { add | del | change | replace } \
-    [ local ] { IP/PREFIX | IP peer IP/PREFIX } \  # The "IP peer IP/PREFIX" option should only be used for on-link point-to-point interfaces. That is, interfaces where exactly two addresses are needed and nothing more (e.g., an ipip tunnel)
-    [ broadcast BROADCAST ADDRESS ] \              # Can be set to "+" or "-" in order to derive it from the local IP/PREFIX. Should not be used in conjunction with the "IP peer IP/PREFIX" option
-    [ scope SCOPE ] \                              # Affects address selection and routing, can be "global", "link" or "host". "link" is only accessible on this layer 2 segment (e.g., 169.254.0.0/16) and "host" only this machine (i.e., loopback)
+sudo ip address {add|del|change|replace} \
+    [local] {IP/PREFIX|IP peer IP/PREFIX} \  # The "IP peer IP/PREFIX" option should only be used for on-link point-to-point interfaces. That is, interfaces where exactly two addresses are needed and nothing more (e.g., an ipip tunnel)
+    [broadcast BROADCAST-ADDRESS] \          # Can be set to "+" or "-" in order to derive it from the local IP/PREFIX. Should not be used in conjunction with the "IP peer IP/PREFIX" option
+    [scope SCOPE] \                          # Affects address selection and routing, can be "global", "link" or "host". "link" is only accessible on this layer 2 segment (e.g., 169.254.0.0/16) and "host" only this machine (i.e., loopback)
     dev INTERFACE \
-    [ valid_lft LFT ] \                            # How long the IP is valid for
-    [ preferred_lft LFT ]                          # How long before the IP is considered "deprecated" and ceases to be used for new outgoing connections
+    [valid_lft LFT] \                        # How long the IP is valid for
+    [preferred_lft LFT]                      # How long before the IP is considered "deprecated" and ceases to be used for new outgoing connections
 
 # Bring interface up/down
-sudo ip link set dev [INTERFACE] { up | down }
+sudo ip link set dev [INTERFACE] {up|down}
 
 
 ip rule show \
-    [ not ] \                      # Invert filter
-    [ from IP/PREFIX ] \
-    [ to IP/PREFIX ] \
-    [ fwmark MARK ] \
-    [ iif INTERFACE ] \            # In interface
-    [ oif INTERFACE ] \            # Out interface
-    [ priority NUMBER ] \
-    [ ipproto PROTOCOL ] \
-    [ sport PORT | PORT RANGE ] \  # Source port
-    [ dport PORT | PORT RANGE ] \  # Destination port
+    [not] \                    # Invert filter
+    [from IP/PREFIX] \
+    [to IP/PREFIX] \
+    [fwmark MARK] \
+    [iif INTERFACE] \          # In interface
+    [oif INTERFACE] \          # Out interface
+    [priority NUMBER] \
+    [ipproto PROTOCOL] \
+    [sport PORT|PORT-RANGE] \  # Source port
+    [dport PORT|PORT-RANGE]    # Destination port
 
-sudo ip rule { add | del } \
-    [ not ] \                         # Invert match criteria
-    [ type TYPE ] \                   # Can be "unicast" (default), "blackhole", "unreachable" or "prohibit". See ip-rule(8) for details
-    [ from IP/PREFIX ] \
-    [ to IP/PREFIX ] \
-    [ fwmark MARK ] \
-    [ iif INTERFACE ] \               # In interface
-    [ oif INTERFACE ] \               # Out interface
-    priority NUMBER \                 # Technically optional but should be set. Lower numbers take precedence
-    [ ipproto PROTOCOL ] \            # E.g, "tcp"
-    [ sport PORT | PORT RANGE ] \     # Source port
-    [ dport PORT | PORT RANGE ] \     # Destination port
-    { table NAME | ID } \
-    [ protocol PROTO ] \              # Can be "kernel", "boot" or "static" (other options are irrelevant). "kernel" is added by the kernel, "boot" during boot and "static" manually
-    [ goto NUMBER ] \                 # Jump to table with priority NUMBER and continue matching from there. Does *not* enter the table, just jumps to it and evaluates from there like normal
-    [ suppress_prefixlength NUMBER ]  # Reject *routes* with prefix NUMBER or less in the table
+sudo ip rule {add|del} \
+    [not] \                         # Invert match criteria
+    [type TYPE] \                   # Can be "unicast" (default), "blackhole", "unreachable" or "prohibit". See ip-rule(8) for details
+    [from IP/PREFIX] \
+    [to IP/PREFIX] \
+    [fwmark MARK] \
+    [iif INTERFACE] \               # In interface
+    [oif INTERFACE] \               # Out interface
+    priority NUMBER \               # Technically optional but should be set. Lower numbers take precedence
+    [ipproto PROTOCOL] \            # E.g, "tcp"
+    [sport PORT|PORT-RANGE] \       # Source port
+    [dport PORT|PORT-RANGE] \       # Destination port
+    table {NAME|ID} \
+    [protocol PROTO] \              # Can be "kernel", "boot" or "static" (other options are irrelevant). "kernel" is added by the kernel, "boot" during boot and "static" manually
+    [goto NUMBER] \                 # Jump to table with priority NUMBER and continue matching from there. Does *not* enter the table, just jumps to it and evaluates from there like normal
+    [suppress_prefixlength NUMBER]  # Reject *routes* with prefix NUMBER or less in the table
 
 
 ip route get \
-    DST-IP
-    [ from SRC-IP ] \            # Packet source IP, must be available on one of the interfaces unless "iif" is also set
-    [ iif INTERFACE ] \          # Check if packet can be routed (forwarded) if it arrived on this interface with a destination IP specified by "from"
-    [ mark MARK ] \
-    [ ipproto PROTOCOL NAME ] \  # Filter based on protocol
-    [ sport PORT ] \             # Filter based on source port
-    [ dport PORT ]               # Filter based on destination port
+    DST-IP \
+    [from SRC-IP] \            # Packet source IP, must be available on one of the interfaces unless "iif" is also set
+    [iif INTERFACE] \          # Check if packet can be routed (forwarded) if it arrived on this interface with a destination IP specified by "from"
+    [mark MARK] \
+    [ipproto PROTOCOL-NAME] \  # Filter based on protocol
+    [sport PORT] \             # Filter based on source port
+    [dport PORT]               # Filter based on destination port
 
 # Filter for routing table entries (as opposed to what route is chosen with "ip route get")
 ip route show \
-    [ FILTER ] \            # "root", "match" or "exact". See ip-route(8) for details
-    [ IP/PREFIX ] \
-    [ table NAME | ID ] \   # "all" can be used to match on all tables
-    [ protocol STRING ] \   # Filter based on "proto" type, e.g, "static"
-    [ scope STRING ] \      # Filter based on "scope" type, e.g., "link"
-    [ type TYPE ] \         # Filter based on "type" type, e.g., "unicast"
-    [ dev INTERFACE ] \
-    [ via IP/PREFIX ]
+    [FILTER] \           # "root", "match" or "exact". See ip-route(8) for details
+    [IP/PREFIX] \
+    [table {NAME|ID}] \  # "all" can be used to match on all tables
+    [protocol STRING] \  # Filter based on "proto" type, e.g, "static"
+    [scope STRING] \     # Filter based on "scope" type, e.g., "link"
+    [type TYPE] \        # Filter based on "type" type, e.g., "unicast"
+    [dev INTERFACE] \
+    [via IP/PREFIX]
 
 
-sudo ip route { add | del | change | append | replace } \
-    [ TYPE ] \                 # Can be "unicast" (default), "local", "broadcast", "multicast", "throw", "unreachable", "prohibit" or "blackhole". "local" and "broadcast" will be added to the "local" rule table \
+sudo ip route {add|del|change|append|replace} \
+    [TYPE] \               # Can be "unicast" (default), "local", "broadcast", "multicast", "throw", "unreachable", "prohibit" or "blackhole". "local" and "broadcast" will be added to the "local" rule table
     IP/PREFIX \
-    [ table NAME | ID ] \
-    [ proto STRING ] \         # Can be "kernel", "boot" or "static" (other options are irrelevant). "kernel" is added by the kernel, "boot" during boot and "static" manually
-    [ scope STRING ] \         # Can be "link", "host" or "global". "host" is only accessible on this machine, "link" only on this layer 2 segment and "global" from anywhere
-    [ metric NUMBER ] \        # Defaults to 0, lower takes precedence
-    [ via IP/PREFIX ] \
-    [ dev INTERFACE ] \
-    [ onlink ] \               # Consider the route valid even if the next hop is not reachable via the interface
-    [ mtu [ lock ] NUMBER ] \  # "lock" inhibits PMTUD from updating the MTU
-    [ advmss NUMBER ]          # Advertised MSS
+    [table {NAME|ID}] \
+    [proto STRING] \       # Can be "kernel", "boot" or "static" (other options are irrelevant). "kernel" is added by the kernel, "boot" during boot and "static" manually
+    [scope STRING] \       # Can be "link", "host" or "global". "host" is only accessible on this machine, "link" only on this layer 2 segment and "global" from anywhere
+    [metric NUMBER] \      # Defaults to 0, lower takes precedence
+    [via IP/PREFIX] \
+    [dev INTERFACE] \
+    [onlink] \             # Consider the route valid even if the next hop is not reachable via the interface
+    [mtu [lock] NUMBER] \  # "lock" inhibits PMTUD from updating the MTU
+    [advmss NUMBER]        # Advertised MSS
 
 
 sudo ip neighbour get IP dev INTERFACE
 
 sudo ip neighbour show \
-    [ proxy ] \        # Proxied ARP entries
-    [ IP/PREFIX ]
-    [ dev INTERFACE ]
-    [ nud ]            # State of the neighbour entry, can be "permanent", "noarp", "reachable", "stale", "none", "incomplete", "delay", "probe" or "failed". See ip-neighbour(8) for details
+    [proxy] \          # Proxied ARP entries
+    [IP/PREFIX] \
+    [dev INTERFACE] \
+    [nud STATE]        # State of the neighbour entry, can be "permanent", "noarp", "reachable", "stale", "none", "incomplete", "delay", "probe" or "failed". See ip-neighbour(8) for details
 
-sudo ip neighbour { add | del | change | replace } \
-    { IP [ lladdr MAC ] [ nud STATE ] | proxy IP }  # "nud" is the state of the neighbour entry, can be "permanent", "noarp", "reachable", "stale", "none", "incomplete", "delay", "probe" or "failed", see ip-neighbour(8) for details. "proxy" is for proxy ARP.
-    [ dev INTERFACE ]
-    [ router ]                                      # Indicate whether neighbour is a router
-    [ use ]                                         # Resolve or refresh the entry
-    [ managed ]                                     # Periodically resolve/refresh this entry
+sudo ip neighbour {add|del|change|replace} \
+    {IP [lladdr MAC] [nud STATE]|proxy IP} \  # "nud" is the state of the neighbour entry, can be "permanent", "noarp", "reachable", "stale", "none", "incomplete", "delay", "probe" or "failed", see ip-neighbour(8) for details. "proxy" is for proxy ARP.
+    [dev INTERFACE] \
+    [router] \                                # Indicate whether neighbour is a router
+    [use] \                                   # Resolve or refresh the entry
+    [managed]                                 # Periodically resolve/refresh this entry
 
-sudo ip neighbour flush
-    [ proxy ] \        # Proxied ARP entries
-    [ IP/PREFIX ]
-    [ dev INTERFACE ]
-    [ nud ]            # State of the neighbour entry, can be "permanent", "noarp", "reachable", "stale", "none", "incomplete", "delay", "probe" or "failed". See ip-neighbour(8) for details
+sudo ip neighbour flush \
+    [proxy] \          # Proxied ARP entries
+    [IP/PREFIX] \
+    [dev INTERFACE] \
+    [nud STATE]        # State of the neighbour entry, can be "permanent", "noarp", "reachable", "stale", "none", "incomplete", "delay", "probe" or "failed". See ip-neighbour(8) for details
 
 
 # Show cached TCP connection metrics
-ip tcp_metrics show [ IP ]
+ip tcp_metrics show [IP]
 
 # Monitor events across ip subcommands. "object" is the normal ip subcommands such as link, address, neigh, etc, and multiple objects can be monitored at the same time.
 # "label" is enabled by default when using "all".
-ip -c -ts monitor [ { all | OBJECT [ OBJECT ] ... } ] [ label ] [ all-nsid ] [ dev DEVICE ]
+ip -c -ts monitor [{all|OBJECT...}] [label] [all-nsid] [dev DEVICE]
 
 # Most useful form of the command
 sudo ip -c -ts monitor all all-nsid
@@ -159,4 +159,3 @@ Misc good to know:
 
     ip -r/--resolve  # Attempt to resolve addresses to DNS names
     ip -n/--netns    # Shows output for specified network namespace
-
