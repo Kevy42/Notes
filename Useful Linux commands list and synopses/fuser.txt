@@ -1,6 +1,6 @@
 # Only covers the most commonly used/important options
 
-# Display processes using the specified files, file systems or TCP/UDP sockets
+# Display processes that are using the specified files, file systems or TCP/UDP sockets
 sudo fuser
     [ --kill ] \                                                                      # Kill the process(es) that are using the file/directory
     [ --interactive ]                                                                 # Confirm before killing
