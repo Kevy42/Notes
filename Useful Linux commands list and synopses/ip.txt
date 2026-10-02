@@ -16,38 +16,38 @@ ip rule restore < ip-rule-backup.txt # Does *not* ignore duplicates
 
 # Add interface. See ip-link(8) for full syntax
 sudo ip link { add | del } \
-    { INTERFACE NAME } \
+    INTERFACE-NAME \
     [ name INTERFACE NAME ] \  # Sometimes required
-    { type TYPE } \
-    [ TYPE SPECIFIC OPTIONS ]
+    type TYPE \
+    [ TYPE-SPECIFIC-OPTIONS ]
 
 # Add interface that's physically linked to another (e.g., of type "vlan"). See ip-link(8) for full syntax
 sudo ip link { add | del } \
-    { link } \
-    { PHYSICAL INTERFACE } \   # Physical interface to link to
-    { name INTERFACE NAME } \  # Interface to be created
-    { type TYPE } \
-    [ TYPE SPECIFIC OPTIONS ]
+    link \
+    PHYSICAL-INTERFACE \   # Physical interface to link to
+    name INTERFACE-NAME \  # Interface to be created
+    type TYPE \
+    [ TYPE-SPECIFIC-OPTIONS ]
 
 
 # Change interface options (settings)
 sudo ip link { set | change } \
-    { dev INTERFACE } \
-    { OPTION } { on | off | STRING | NUMBER } \  # Relevant options: "arp", "multicast", "allmulticast", "promisc", "name", "mtu", "address", "broadcast", "alias", "master", "nomaster", "addrgenmode". "nomaster" takes no arguments.
+    dev INTERFACE \
+    OPTION { on | off | STRING | NUMBER } \  # Relevant options: "arp", "multicast", "allmulticast", "promisc", "name", "mtu", "address", "broadcast", "alias", "master", "nomaster", "addrgenmode". "nomaster" takes no arguments.
 
 # Change interface type specific options. See ip-link(8) for full syntax
 sudo ip link { set | change } \
-    { dev INTERFACE } \
-    { type TYPE } \
-    { TYPE SPECIFIC OPTIONS }
+    dev INTERFACE \
+    type TYPE \
+    TYPE-SPECIFIC-OPTIONS
 
 
 # Add IP to interface
 sudo ip address { add | del | change | replace } \
     [ local ] { IP/PREFIX | IP peer IP/PREFIX } \  # The "IP peer IP/PREFIX" option should only be used for on-link point-to-point interfaces. That is, interfaces where exactly two addresses are needed and nothing more (e.g., an ipip tunnel)
-    [ broadcast BROADCAST ADDRESS ] \              # Can be set to "+" or "-" in order to derive it from the local { IP/PREFIX }. Should not be used in conjunction with the "IP peer IP/PREFIX" option
+    [ broadcast BROADCAST ADDRESS ] \              # Can be set to "+" or "-" in order to derive it from the local IP/PREFIX. Should not be used in conjunction with the "IP peer IP/PREFIX" option
     [ scope SCOPE ] \                              # Affects address selection and routing, can be "global", "link" or "host". "link" is only accessible on this layer 2 segment (e.g., 169.254.0.0/16) and "host" only this machine (i.e., loopback)
-    { dev INTERFACE } \
+    dev INTERFACE \
     [ valid_lft LFT ] \                            # How long the IP is valid for
     [ preferred_lft LFT ]                          # How long before the IP is considered "deprecated" and ceases to be used for new outgoing connections
 
@@ -75,7 +75,7 @@ sudo ip rule { add | del } \
     [ fwmark MARK ] \
     [ iif INTERFACE ] \               # In interface
     [ oif INTERFACE ] \               # Out interface
-    { priority NUMBER } \             # Technically optional but should be set. Lower numbers take precedence
+    priority NUMBER \                 # Technically optional but should be set. Lower numbers take precedence
     [ ipproto PROTOCOL ] \            # E.g, "tcp"
     [ sport PORT | PORT RANGE ] \     # Source port
     [ dport PORT | PORT RANGE ] \     # Destination port
@@ -86,8 +86,8 @@ sudo ip rule { add | del } \
 
 
 ip route get \
-    { DST IP }
-    [ from SRC IP ] \            # Packet source IP, must be available on one of the interfaces unless "iif" is also set
+    DST-IP
+    [ from SRC-IP ] \            # Packet source IP, must be available on one of the interfaces unless "iif" is also set
     [ iif INTERFACE ] \          # Check if packet can be routed (forwarded) if it arrived on this interface with a destination IP specified by "from"
     [ mark MARK ] \
     [ ipproto PROTOCOL NAME ] \  # Filter based on protocol
@@ -108,7 +108,7 @@ ip route show \
 
 sudo ip route { add | del | change | append | replace } \
     [ TYPE ] \                 # Can be "unicast" (default), "local", "broadcast", "multicast", "throw", "unreachable", "prohibit" or "blackhole". "local" and "broadcast" will be added to the "local" rule table \
-    { IP/PREFIX } \
+    IP/PREFIX \
     [ table NAME | ID ] \
     [ proto STRING ] \         # Can be "kernel", "boot" or "static" (other options are irrelevant). "kernel" is added by the kernel, "boot" during boot and "static" manually
     [ scope STRING ] \         # Can be "link", "host" or "global". "host" is only accessible on this machine, "link" only on this layer 2 segment and "global" from anywhere
@@ -120,7 +120,7 @@ sudo ip route { add | del | change | append | replace } \
     [ advmss NUMBER ]          # Advertised MSS
 
 
-sudo ip neighbour get { IP } { dev INTERFACE }
+sudo ip neighbour get IP dev INTERFACE
 
 sudo ip neighbour show \
     [ proxy ] \        # Proxied ARP entries
@@ -159,3 +159,4 @@ Misc good to know:
 
     ip -r/--resolve  # Attempt to resolve addresses to DNS names
     ip -n/--netns    # Shows output for specified network namespace
+
