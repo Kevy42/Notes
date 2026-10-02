@@ -18,7 +18,7 @@ sudo fuser
     { FILE | DIRECTORY }
 
 
-# List all processes using the specified file system. Most useful form of the commands
+# List all processes using the specified file system. Most useful form of the command
 sudo fuser --kill --interactive --mount --ismountpoint --user { ROOT PATH OF THE MOUNT }
 
 # List all processes using the specified file/directory
