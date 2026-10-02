@@ -8,21 +8,21 @@ sudo fuser
     [ --ismountpoint ]                 # Makes sure only mount points (i.e., the root of the mount) are accepted. Safeguards against typoing the mounted path and accidentally killing the system
 
     # List all processes using TCP/UDP sockets.
-    # The commas must be present when not using [ LOCAL PORT ] while still using one or both of the other options (e.g., "--namespace tcp ,,[ REMOTE PORT ]").
-    # The "{ PORT }/{ TCP | UDP }" shortcut notation (e.g., "fuser ssh/tcp") can also be used. Numeric and symbolic values are supported for all three of the latter options.
-    [ --namespace { tcp | udp } { [ LOCAL PORT ][ ,REMOTE HOST ][ ,REMOTE PORT ] } ]
+    # The commas must be present when not using [ LOCAL-PORT ] while still using one or both of the other options (e.g., "--namespace tcp ,,[ REMOTE-PORT ]").
+    # The "PORT/{ tcp | udp }" shortcut notation (e.g., "fuser ssh/tcp") can also be used. Numeric and symbolic values are supported for all three of the latter options.
+    [ --namespace { tcp | udp } { [ LOCAL-PORT ][ ,REMOTE-HOST ][ ,REMOTE-PORT ] } ]
 
     [ -SIGNAL-NAME | -SIGNAL-NUMBER ]  # Signal used when killing processes. Defaults to SIGKILL
     [ --user ]                         # Display the user next to the PID
     [ --verbose ]
-    { FILE | DIRECTORY }
+    FILE | DIRECTORY
 
 
 # List all processes using the specified file system. Most useful form of the command
-sudo fuser --kill --interactive --mount --ismountpoint --user { ROOT PATH OF THE MOUNT }
+sudo fuser --kill --interactive --mount --ismountpoint --user ROOT-PATH-OF-THE-MOUNT
 
 # List all processes using the specified file/directory
-sudo fuser --kill --interactive --user { PATH | DIRECTORY }
+sudo fuser --kill --interactive --user PATH | DIRECTORY
 
 # List all processes using the TCP socket at port 22
 sudo fuser -n tcp --user ,0.0.0.0/0,22

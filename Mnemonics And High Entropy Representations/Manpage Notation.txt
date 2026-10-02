@@ -1,0 +1,6 @@
+NAME         ->  Mandatory
+[ NAME ]     ->  Optional
+{ A | B }    ->  Mandatory, Exactly one
+{ NAME }     ->  Undefined, usually treated as bare NAME
+[ A | B ]    ->  Optional and exclusive. A, B, or neither, but not both
+...          ->  Several identical entries
