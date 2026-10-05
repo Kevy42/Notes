@@ -64,8 +64,8 @@ ip rule show \
     [ oif INTERFACE ] \          # Out interface
     [ priority NUMBER ] \
     [ ipproto PROTOCOL ] \
-    [ sport [ PORT | PORT-RANGE ] ] \  # Source port
-    [ dport [ PORT | PORT-RANGE ] ]    # Destination port
+    [ sport { PORT | PORT-RANGE } ] \  # Source port
+    [ dport { PORT | PORT-RANGE } ]    # Destination port
 
 sudo ip rule { add | del } \
     [ not ] \                         # Invert match criteria
@@ -77,8 +77,8 @@ sudo ip rule { add | del } \
     [ oif INTERFACE ] \               # Out interface
     priority NUMBER \               # Technically optional but should be set. Lower numbers take precedence
     [ ipproto PROTOCOL ] \            # E.g, "tcp"
-    [ sport [ PORT | PORT-RANGE ] ] \       # Source port
-    [ dport [ PORT | PORT-RANGE ] ] \       # Destination port
+    [ sport { PORT | PORT-RANGE } ] \       # Source port
+    [ dport { PORT | PORT-RANGE } ] \       # Destination port
     table { NAME | ID } \
     [ protocol PROTO ] \              # Can be "kernel", "boot" or "static" (other options are irrelevant). "kernel" is added by the kernel, "boot" during boot and "static" manually
     [ goto NUMBER ] \                 # Jump to table with priority NUMBER and continue matching from there. Does *not* enter the table, just jumps to it and evaluates from there like normal
