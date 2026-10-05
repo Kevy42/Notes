@@ -145,7 +145,7 @@ sudo ip neighbour flush \
 # Show cached TCP connection metrics
 ip tcp_metrics show [IP]
 
-# Monitor events across ip subcommands. "object" is the normal ip subcommands such as link, address, neigh, etc, and multiple objects can be monitored at the same time.
+# Monitor events across ip subcommands. "OBJECT" is the normal ip subcommands such as link, address, neigh, etc.
 # "label" is enabled by default when using "all".
 ip -c -ts monitor [{all|OBJECT...}] [label] [all-nsid] [dev DEVICE]
 
