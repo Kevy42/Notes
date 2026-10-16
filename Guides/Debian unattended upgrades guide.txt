@@ -1,12 +1,29 @@
 Prerequisite Info:
-    1. Unattended upgrades are performed by the unattended-upgrades package (which creates the /etc/apt/apt.conf.d/50unattended-upgrades config file upon installation)
-    2. The two main config files read by unattended-upgrades reside under /etc/apt/apt.conf.d/ and are called 20auto-upgrades and 50unattended-upgrades. The options for 20auto-upgrades are, for some fucking reason, documented at the top of the /usr/lib/apt/apt.systemd.daily script.
-    3. unattended-upgrades itself gets invoked by the /usr/lib/apt/apt.systemd.daily script which is called by the apt-daily.service and apt-daily-upgrade.service services (each with their own accompanying .timers) using different flags for running apt update vs apt upgrade.
-        Control flow:
-            apt-daily-upgrade.timer -> apt-daily-upgrade.service -> apt.systemd.daily (script) -> unattended-upgrades
-            NOTE: The only determining factors for if unattended upgrades will occure are the config files. The timers will always be enabled, even if unattended-upgrades isn't installed.
+    1. The APT package supplies the following unit files and script by default:
+        apt-daily.timer
+        apt-daily.service
 
-    4. "sudo dpkg-reconfigure unattended-upgrades" can be run in order to generate the 20auto-upgrades config file.
+        apt-daily-upgrade.timer
+        apt-daily-upgrade.service
+
+        /usr/lib/apt/apt.systemd.daily
+
+        The timers trigger the services which trigger the script.
+
+    2. The unattended-upgrades package supplies the following config files:
+        /etc/apt/apt.conf.d/20auto-upgrades (which must initially be generated (see /usr/share/doc/unattended-upgrades/README.md.gz) in order to enable the upgrade functionality)
+        /etc/apt/apt.conf.d/50unattended-upgrades
+
+        (As well as templates under /usr/share/unattended-upgrades/)
+
+    3. apt-daily.service runs the apt.systemd.daily script with the "update" argument, and apt-daily-upgrade.service with the "install" argument.
+       The script checks whether the relevant APT configuration options APT::Periodic::Update-Package-Lists and APT::Periodic::Unattended-Upgrade located in 20auto-upgrades are set to "1".
+       If so, the script then updates the package lists using apt-get and invokes unattended-upgrade to download and install eligible upgrades.
+
+    4. Control flow:
+       apt-daily.timer         -> apt-daily.service         -> "apt.systemd.daily update"  -> "apt-get update"
+       apt-daily-upgrade.timer -> apt-daily-upgrade.service -> "apt.systemd.daily install" -> unattended-upgrade
+
 
 Instructions:
     1. Make sure the unattended-upgrades and debdelta packages are installed.
