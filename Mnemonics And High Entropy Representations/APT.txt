@@ -1,0 +1,28 @@
+/etc/apt/sources.list.d/*.sources fields:
+    1. Types
+    2. URIs
+    3. Suites
+    4. Components
+    5. Signed-By
+
+pin priorities:
+    p >= 1000:
+        installed even if this constitutes a downgrade
+
+    990 <= p < 1000:
+        installed even if not from the target release
+
+    500 <= p < 990:
+        installed unless a version from the target release is available
+
+    100 <= p < 500:
+        installed unless a version from some other distribution is available
+
+    0 < p < 100:
+        can be installed but won't be updated when running apt upgrade/full-upgrade
+
+    p < 0:
+        prevents installation
+
+    p = 0:
+        undefined behaviour, do not use

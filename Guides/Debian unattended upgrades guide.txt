@@ -1,3 +1,6 @@
+NOTE: Incomplete guide!
+
+
 Prerequisite Info:
     1. The APT package supplies the following unit files and script by default:
         apt-daily.timer
@@ -23,6 +26,8 @@ Prerequisite Info:
     4. Control flow:
        apt-daily.timer         -> apt-daily.service         -> "apt.systemd.daily update"  -> "apt-get update"
        apt-daily-upgrade.timer -> apt-daily-upgrade.service -> "apt.systemd.daily install" -> unattended-upgrade
+
+    5. The script can also be configured to download upgradeable packages separately from installing them (see below).
 
 
 Instructions:
