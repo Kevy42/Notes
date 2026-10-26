@@ -1,11 +1,27 @@
+# Without Secure Boot
 POST ->
-   UEFI ->
-       Bootloader (EFI application) ->
-           Kernel ->
-               initramfs ->
-                   PID 1 (systemd) ->
-                       default.target (symlink, located at /usr/lib/systemd/system/default.target) ->
-                           graphical.target ->
-                               multi-user.target ->
-                                   ...
+    UEFI ->
+        Bootloader (EFI PE) ->
+            Kernel ->
+                initramfs ->
+                    PID 1 (systemd) ->
+                        default.target (symlink, located at /usr/lib/systemd/system/default.target) ->
+                            graphical.target ->
+                                multi-user.target ->
+                                    ...
 
+# With Secure Boot
+POST ->
+    UEFI ->
+        Shim (EFI PE) ->
+            Bootloader (EFI PE) ->
+                Kernel ->
+                    initramfs ->
+                        PID 1 (systemd) ->
+                            default.target (symlink, located at /usr/lib/systemd/system/default.target) ->
+                                graphical.target ->
+                                    multi-user.target ->
+                                        ...
+
+# The Shim is a basic bootloader that's signed by Microsoft's signing key. It verifies the "real" bootloader (e.g., GRUB) which then verifies the Kernel.
+# The initramfs is as of yet unverified.
